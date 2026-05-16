@@ -181,7 +181,7 @@ export function SiteHeader() {
               <button 
                 className="dropdown-trigger"
                 onClick={() => setMenuOpen(!menuOpen)}
-                style={{ borderRadius: "40px", padding: "6px 16px", display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "13px" }}
+                style={{ background: "none", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px", color: "#f1a7c8", fontSize: "14px", fontWeight: 500, padding: 0 }}
               >
                 <UserIcon />
                 <span>кабинет</span>
@@ -217,7 +217,7 @@ export function SiteHeader() {
               <button 
                 className="dropdown-trigger"
                 onClick={() => setMenuOpen(!menuOpen)}
-                style={{ borderRadius: "40px", padding: "6px 16px", display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "13px" }}
+                style={{ background: "none", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px", color: "#f1a7c8", fontSize: "14px", fontWeight: 500, padding: 0 }}
               >
                 <UserIcon />
                 <span>кабинет</span>
