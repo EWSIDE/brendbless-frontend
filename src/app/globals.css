@@ -837,6 +837,24 @@ a {
   border-color: var(--pink-300);
 }
 
+.cabinet-btn {
+  background: none !important;
+  border: none !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #f1a7c8;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 !important;
+  transition: opacity 0.2s;
+}
+
+.cabinet-btn:hover {
+  opacity: 0.7;
+}
+
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -1011,7 +1029,7 @@ a {
 }
 
 button[type="submit"],
-button:not(.dropdown-trigger):not(.logout-btn):not(.hero-nav-btn):not(.hero-icon-btn):not(.password-toggle-btn):not(.size-chip-btn):not(.add-to-cart-icon-btn):not(.img-remove-btn) {
+button:not(.dropdown-trigger):not(.cabinet-btn):not(.logout-btn):not(.hero-nav-btn):not(.hero-icon-btn):not(.password-toggle-btn):not(.size-chip-btn):not(.add-to-cart-icon-btn):not(.img-remove-btn) {
   padding: 20px 40px;
   border: none;
   border-radius: 40px;

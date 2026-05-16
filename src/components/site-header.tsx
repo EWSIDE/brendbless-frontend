@@ -179,9 +179,8 @@ export function SiteHeader() {
           {user ? (
             <div className="dropdown" ref={menuRef}>
               <button 
-                className="dropdown-trigger"
+                className="cabinet-btn"
                 onClick={() => setMenuOpen(!menuOpen)}
-                style={{ background: "none", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px", color: "#f1a7c8", fontSize: "14px", fontWeight: 500, padding: 0 }}
               >
                 <UserIcon />
                 <span>кабинет</span>
@@ -215,9 +214,8 @@ export function SiteHeader() {
           ) : (
             <div className="dropdown" ref={menuRef}>
               <button 
-                className="dropdown-trigger"
+                className="cabinet-btn"
                 onClick={() => setMenuOpen(!menuOpen)}
-                style={{ background: "none", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px", color: "#f1a7c8", fontSize: "14px", fontWeight: 500, padding: 0 }}
               >
                 <UserIcon />
                 <span>кабинет</span>
