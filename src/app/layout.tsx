@@ -11,8 +11,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "bless",
+  title: "BLESS",
   description: "бренд одежды, созданный с одной идеей: делать шикарные вещи для самых шикарных дам.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
