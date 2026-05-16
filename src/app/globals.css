@@ -838,8 +838,9 @@ a {
 }
 
 .cabinet-btn {
-  background: none !important;
-  border: none !important;
+  background: #fff5f8 !important;
+  border: 1px solid #f9a8d4 !important;
+  border-radius: 24px !important;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -847,12 +848,14 @@ a {
   color: #f1a7c8;
   font-size: 14px;
   font-weight: 500;
-  padding: 0 !important;
-  transition: opacity 0.2s;
+  padding: 8px 16px !important;
+  transition: background 0.2s, border-color 0.2s;
+  line-height: 1;
 }
 
 .cabinet-btn:hover {
-  opacity: 0.7;
+  background: #fce7f3 !important;
+  border-color: #f472b6 !important;
 }
 
 .dropdown-menu {
