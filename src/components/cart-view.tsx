@@ -217,7 +217,7 @@ export function CartView() {
   }
 
   return (
-    <section className="stack">
+    <section className="stack" style={{ maxWidth: "600px", margin: "0 auto" }}>
       {/* Заголовок */}
       <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
         <button

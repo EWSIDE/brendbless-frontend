@@ -590,10 +590,6 @@ button[disabled]::after {
   width: 100%;
   aspect-ratio: 3 / 4;
   background: linear-gradient(180deg, #fefcfd 0%, #fdf2f8 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
   color: var(--pink-400);
   font-size: 14px;
