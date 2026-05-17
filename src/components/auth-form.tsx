@@ -87,28 +87,35 @@ export function AuthForm({ title, description, buttonText }: AuthFormProps) {
         return;
       }
 
-      if (result.data?.accessToken) {
-        setCookie(ACCESS_TOKEN_COOKIE, result.data.accessToken);
+      if (title === "вход") {
+        // Login: save tokens and redirect to home
+        if (result.data?.accessToken) {
+          setCookie(ACCESS_TOKEN_COOKIE, result.data.accessToken);
+        }
+        if (result.data?.refreshToken) {
+          setCookie(REFRESH_TOKEN_COOKIE, result.data.refreshToken);
+        }
+        const userPayload = {
+          id: result.data?.user?.id || "",
+          email: result.data?.user?.email || email,
+          role: result.data?.user?.role || "USER",
+        };
+        setCookie(USER_COOKIE, JSON.stringify(userPayload));
+        setCookie(LAST_USER_COOKIE, JSON.stringify(userPayload));
+        setMessage("вход выполнен!");
+        formElement.reset();
+        setTimeout(() => {
+          router.push("/");
+          router.refresh();
+        }, 500);
+      } else {
+        // Register: no tokens returned, redirect to login
+        setMessage("регистрация успешна! войдите в аккаунт.");
+        formElement.reset();
+        setTimeout(() => {
+          router.push("/login");
+        }, 1200);
       }
-      if (result.data?.refreshToken) {
-        setCookie(REFRESH_TOKEN_COOKIE, result.data.refreshToken);
-      }
-      
-      const userPayload = {
-        id: result.data?.user?.id || "",
-        email: result.data?.user?.email || email,
-        role: result.data?.user?.role || "USER",
-      };
-      setCookie(USER_COOKIE, JSON.stringify(userPayload));
-      setCookie(LAST_USER_COOKIE, JSON.stringify(userPayload));
-
-      setMessage(title === "вход" ? "вход выполнен!" : "регистрация успешна!");
-      formElement.reset();
-      
-      setTimeout(() => {
-        router.push("/");
-        router.refresh();
-      }, 500);
     } catch (err) {
       console.error("auth error:", err);
       setError("ошибка соединения с сервером");
