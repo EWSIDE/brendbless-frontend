@@ -71,16 +71,10 @@ function SbpLogo() {
   );
 }
 
-// ─── Логотип карты (Visa/MC-стиль) ────────────────────────────────
+// ─── Логотип карты МИР ────────────────────────────────────────────
 function CardLogo() {
   return (
-    <svg width="32" height="20" viewBox="0 0 80 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="80" height="50" rx="6" fill="#1A1F71"/>
-      <rect x="8" y="18" width="64" height="14" rx="2" fill="#F7B731" opacity="0.9"/>
-      <circle cx="30" cy="25" r="10" fill="#EB001B"/>
-      <circle cx="50" cy="25" r="10" fill="#F79E1B"/>
-      <path d="M40 17.5a10 10 0 0 1 0 15 10 10 0 0 1 0-15z" fill="#FF5F00"/>
-    </svg>
+    <img src="/mir-logo.svg" alt="МИР" width="40" height="24" style={{ objectFit: "contain" }} />
   );
 }
 
