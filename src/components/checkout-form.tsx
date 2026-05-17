@@ -497,7 +497,7 @@ export function CheckoutForm() {
             {/* 1. Данные */}
             <div className="checkout-card">
               <h2 style={{ margin: "0 0 16px 0", fontSize: "16px", fontWeight: 600, color: "#333" }}>1. данные</h2>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div className="fields-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <label className="field">
                   <span>фио</span>
                   <input name="fullName" type="text" placeholder="иван иванов" required />
@@ -844,6 +844,9 @@ const checkoutStyles = `
     .checkout-card {
       padding: 16px;
       border-radius: 16px;
+    }
+    .checkout-card .fields-row {
+      grid-template-columns: 1fr !important;
     }
   }
 `;
