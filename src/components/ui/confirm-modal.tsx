@@ -43,8 +43,7 @@ export function ConfirmModal({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "rgba(0,0,0,0.3)",
-        backdropFilter: "blur(4px)",
+        background: "rgba(0,0,0,0.4)",
         animation: "fadeIn 0.15s ease-out",
       }}
       onClick={onCancel}

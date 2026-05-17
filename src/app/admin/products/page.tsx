@@ -1987,8 +1987,6 @@ const overlayStyle: React.CSSProperties = {
   justifyContent: "center",
   zIndex: 1000,
   padding: "20px",
-  backdropFilter: "blur(8px)",
-  WebkitBackdropFilter: "blur(8px)",
 };
 
 const modalStyle: React.CSSProperties = {
