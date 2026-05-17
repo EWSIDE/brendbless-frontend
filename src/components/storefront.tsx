@@ -141,7 +141,7 @@ function CartToast({
         bottom: "24px",
         right: "24px",
         background: "#fff",
-        border: "1px solid #fce7f3",
+        border: "none",
         borderRadius: "20px",
         padding: "16px 20px",
         display: "flex",
