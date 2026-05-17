@@ -399,12 +399,105 @@ a {
   color: #f1a7c8;
 }
 
+/* ─── Глобальные переходы и плавность ──────────────────────────── */
+
+/* Плавное появление страницы */
+main {
+  animation: pageFadeIn 0.35s ease both;
+}
+
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Плавное появление карточек товаров */
+.card {
+  animation: cardFadeIn 0.4s ease both;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Задержка для каждой карточки в сетке */
+.product-grid .card:nth-child(1)  { animation-delay: 0.04s; }
+.product-grid .card:nth-child(2)  { animation-delay: 0.08s; }
+.product-grid .card:nth-child(3)  { animation-delay: 0.12s; }
+.product-grid .card:nth-child(4)  { animation-delay: 0.16s; }
+.product-grid .card:nth-child(5)  { animation-delay: 0.20s; }
+.product-grid .card:nth-child(6)  { animation-delay: 0.24s; }
+.product-grid .card:nth-child(7)  { animation-delay: 0.28s; }
+.product-grid .card:nth-child(8)  { animation-delay: 0.32s; }
+
+/* Плавные переходы для кнопок */
+button, a, input, select, textarea {
+  transition: opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Плавный лоадер кнопки */
+button[disabled] {
+  position: relative;
+  overflow: hidden;
+}
+
+button[disabled]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
+  animation: btnShimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes btnShimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+
 /* ─── Skeleton Block ────────────────────────────────────────────── */
 .skeleton-block {
   position: relative;
   overflow: hidden;
   border-radius: 30px;
   background: linear-gradient(to bottom right, #fff8fc, #ffeef5, #ffdbe8);
+}
+
+/* Shimmer sweep across skeleton */
+.skeleton-block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes skeletonShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Skeleton text lines */
+.skeleton-line {
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #f7d7e5 0%, #fbe8f0 50%, #f7d7e5 100%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.6s ease-in-out infinite;
 }
 
 .skeleton-block-hero {

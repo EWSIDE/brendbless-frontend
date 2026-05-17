@@ -61,8 +61,8 @@ export function AuthForm({ title, description, buttonText }: AuthFormProps) {
     const password = String(formData.get("password") || "");
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      const endpoint = title === "вход" ? `${API_URL}/api/auth/login` : `${API_URL}/api/auth/register`;
+      // Use Next.js API proxy to avoid CORS issues
+      const endpoint = title === "вход" ? `/api/auth/login` : `/api/auth/register`;
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {

@@ -16,8 +16,8 @@ export default function ForgotPasswordPage() {
     setMessage("");
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
+      // Use Next.js API proxy to avoid CORS issues
+      const response = await fetch(`/api/auth/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

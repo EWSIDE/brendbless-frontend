@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { CookieBanner } from "@/components/cookie-banner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -33,6 +34,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="container page-content">{children}</main>
         <SiteFooter />
+        <CookieBanner />
       </body>
     </html>
   );
