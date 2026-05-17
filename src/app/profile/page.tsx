@@ -167,7 +167,10 @@ export default function ProfilePage() {
     return (
       <section className="profile-shell">
         <div className="profile-card" style={{ textAlign: "center", padding: "60px 40px" }}>
-          <p style={{ color: "#8e8e8e" }}>загрузка...</p>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <div style={{ width: 28, height: 28, border: "3px solid #fce7f3", borderTopColor: "#f1a7c8", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+          </div>
+          <style jsx>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
       </section>
     );

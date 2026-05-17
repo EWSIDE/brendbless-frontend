@@ -101,7 +101,12 @@ export default function ForgotPasswordPage() {
             {error && <p className="notice error">{error}</p>}
 
             <button type="submit" disabled={loading}>
-              {loading ? "загрузка..." : "отправить"}
+              {loading ? (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                  <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 0.7s linear infinite", display: "inline-block" }} />
+                  <style jsx>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+                </span>
+              ) : "отправить"}
             </button>
           </form>
         )}

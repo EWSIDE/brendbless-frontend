@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { getCookie, setCookie, ACCESS_TOKEN_COOKIE } from "@/lib/cookies";
+import { ConfirmModal } from "@/components/ui/confirm-modal";
 import {
   Package,
   Plus,
@@ -75,6 +76,9 @@ export default function AdminProductsPage() {
   const [productSizes, setProductSizes] = useState<string[]>([]);
   const [sizeInput, setSizeInput] = useState("");
   const [draftRestored, setDraftRestored] = useState(false);
+
+  // Delete confirmation modal
+  const [deleteConfirm, setDeleteConfirm] = useState<{ open: boolean; id: string; name: string }>({ open: false, id: "", name: "" });
 
   // Drag & drop for photos inside modal
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -422,8 +426,13 @@ export default function AdminProductsPage() {
     }
   };
 
-  const handleDeleteProduct = async (id: string) => {
-    if (!confirm("удалить товар?")) return;
+  const requestDeleteProduct = (product: Product) => {
+    setDeleteConfirm({ open: true, id: product.id, name: product.name });
+  };
+
+  const confirmDeleteProduct = async () => {
+    const id = deleteConfirm.id;
+    setDeleteConfirm({ open: false, id: "", name: "" });
     const token = getToken();
 
     try {
@@ -925,7 +934,7 @@ export default function AdminProductsPage() {
                     <Pencil size={14} color="#f1a7c8" />
                   </button>
                   <button
-                    onClick={() => handleDeleteProduct(p.id)}
+                    onClick={() => requestDeleteProduct(p)}
                     title="удалить"
                     style={{
                       padding: "7px",
@@ -1770,6 +1779,17 @@ export default function AdminProductsPage() {
           </div>
         </div>
       )}
+
+      {/* ======= Delete Confirmation Modal ======= */}
+      <ConfirmModal
+        open={deleteConfirm.open}
+        title="удалить товар?"
+        message={`вы уверены, что хотите удалить «${deleteConfirm.name}»? это действие нельзя отменить.`}
+        confirmText="удалить"
+        cancelText="отмена"
+        onConfirm={confirmDeleteProduct}
+        onCancel={() => setDeleteConfirm({ open: false, id: "", name: "" })}
+      />
 
       <style jsx global>{`
         @keyframes spin {

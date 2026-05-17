@@ -198,7 +198,10 @@ export function CartView() {
     return (
       <section className="stack">
         <h1 style={{ fontSize: "32px", fontWeight: 600, color: "#333", letterSpacing: "-0.5px" }}>корзина</h1>
-        <p style={{ color: "#8e8e8e", fontSize: "16px" }}>загружаем данные…</p>
+        <div style={{ display: "flex", justifyContent: "center", padding: "20px 0" }}>
+          <div style={{ width: 28, height: 28, border: "3px solid #fce7f3", borderTopColor: "#f1a7c8", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+        </div>
+        <style jsx>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </section>
     );
   }

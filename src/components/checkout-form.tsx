@@ -182,7 +182,10 @@ export function CheckoutForm() {
     return (
       <div className="checkout-shell">
         <div className="checkout-card">
-          <p className="muted">загружаем корзину…</p>
+          <div style={{ display: "flex", justifyContent: "center", padding: "20px 0" }}>
+            <div style={{ width: 28, height: 28, border: "3px solid #fce7f3", borderTopColor: "#f1a7c8", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+          </div>
+          <style jsx>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
       </div>
     );

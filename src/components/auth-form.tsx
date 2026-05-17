@@ -237,7 +237,12 @@ export function AuthForm({ title, description, buttonText }: AuthFormProps) {
           {message && <p className="notice success">{message}</p>}
 
           <button type="submit" disabled={loading} style={{ marginTop: "8px" }}>
-            {loading ? "загрузка..." : buttonText}
+            {loading ? (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 0.7s linear infinite", display: "inline-block" }} />
+                <style jsx>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+              </span>
+            ) : buttonText}
           </button>
         </form>
 
