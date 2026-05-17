@@ -554,20 +554,23 @@ button[disabled]::after {
 .category-section {
   display: grid;
   gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .category-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  padding-bottom: 12px;
-  color: var(--pink-700);
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding-bottom: 8px;
+  color: var(--text);
+  text-transform: none;
 }
 
 .product-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 32px 24px;
-  max-width: 1200px;
+  gap: 28px 20px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -668,16 +671,18 @@ button[disabled]::after {
 }
 
 .product-name {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 400;
   margin: 0;
   color: var(--text);
+  text-transform: none;
 }
 
 .product-description {
   font-size: 13px;
   color: var(--muted);
   margin: 0;
+  text-transform: none;
 }
 
 .price-block {
@@ -687,8 +692,8 @@ button[disabled]::after {
 }
 
 .price-current {
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 400;
   color: #f1a7c8;
 }
 
@@ -715,6 +720,7 @@ button[disabled]::after {
   align-items: center;
   justify-content: center;
   line-height: 1;
+  text-transform: uppercase;
 }
 
 .size-chip-btn:hover {
