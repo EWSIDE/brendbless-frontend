@@ -16,8 +16,9 @@ export default function ForgotPasswordPage() {
     setMessage("");
 
     try {
-      // Use Next.js API proxy to avoid CORS issues
-      const response = await fetch(`/api/auth/forgot-password`, {
+      // Direct request to backend — CORS is properly configured on the backend
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.brandbless.ru";
+      const response = await fetch(`${API_BASE}/api/auth/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
