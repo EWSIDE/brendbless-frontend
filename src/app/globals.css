@@ -568,22 +568,28 @@ button[disabled]::after {
 .product-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 16px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 /* ─── Карточка товара ───────────────────────────────────────────── */
 .card {
   background: var(--bg-card);
-  border: none;
-  border-radius: 48px;
+  border: 1px solid #fdf2f8;
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: var(--shadow-soft);
+  box-shadow: none;
+}
+
+.card:hover {
+  border-color: #f9a8d4;
 }
 
 .product-image-placeholder {
   width: 100%;
-  aspect-ratio: 4 / 5;
-  background: linear-gradient(180deg, #fff5f8 0%, #fce7f3 100%);
+  aspect-ratio: 3 / 4;
+  background: linear-gradient(180deg, #fefcfd 0%, #fdf2f8 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
