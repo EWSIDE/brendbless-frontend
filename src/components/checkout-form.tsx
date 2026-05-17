@@ -78,133 +78,18 @@ function CardLogo() {
   );
 }
 
-// ─── Типы СДЭК ───────────────────────────────────────────────────
-type CdekCity = { code: number; city: string; region: string; country: string };
-type CdekPoint = { code: string; name: string; address: string; type: string; workTime: string };
-
-// ─── Поиск города ─────────────────────────────────────────────────
-function CitySearch({ onSelect }: { onSelect: (city: CdekCity) => void }) {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<CdekCity[]>([]);
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (query.length < 2) { setResults([]); return; }
-    const timer = setTimeout(async () => {
-      try {
-        const res = await fetch(`${API_BASE}/api/cdek/cities?q=${encodeURIComponent(query)}`);
-        const data = await res.json();
-        if (data.success) setResults(data.data);
-      } catch { /* ignore */ }
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [query]);
-
-  return (
-    <div style={{ position: "relative" }}>
-      <div style={{ position: "relative" }}>
-        <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#8e8e8e", fontSize: "14px" }}>🔍</span>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
-          onFocus={() => setOpen(true)}
-          placeholder="москва, россия"
-          style={{
-            width: "100%",
-            padding: "12px 36px 12px 36px",
-            border: "1px solid #fdf2f8",
-            borderRadius: "12px",
-            fontSize: "14px",
-            fontFamily: "inherit",
-            background: "#fff",
-          }}
-        />
-        {query && (
-          <button type="button" onClick={() => { setQuery(""); setResults([]); }} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#8e8e8e", fontSize: "16px" }}>✕</button>
-        )}
-      </div>
-      {open && results.length > 0 && (
-        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid #fdf2f8", borderRadius: "12px", marginTop: "4px", maxHeight: "200px", overflowY: "auto", zIndex: 50, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}>
-          {results.map((c) => (
-            <button
-              key={c.code}
-              type="button"
-              onClick={() => { onSelect(c); setQuery(`${c.city}, ${c.country}`); setOpen(false); }}
-              style={{ display: "block", width: "100%", textAlign: "left", padding: "10px 14px", border: "none", background: "none", cursor: "pointer", fontSize: "13px", color: "#333", fontFamily: "inherit" }}
-            >
-              {c.city}, {c.region}, {c.country}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Модалка пунктов выдачи ───────────────────────────────────────
-function PointsModal({ cityCode, type, onSelect, onClose }: { cityCode: number; type: "PVZ" | "POSTAMAT"; onSelect: (point: { code: string; address: string }) => void; onClose: () => void }) {
-  const [points, setPoints] = useState<CdekPoint[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-    fetch(`${API_BASE}/api/cdek/points?city_code=${cityCode}&type=${type}`)
-      .then((r) => r.json())
-      .then((data) => { if (data.success) setPoints(data.data); })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [cityCode, type]);
-
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
-      <div style={{ background: "#fff", borderRadius: "20px", width: "100%", maxWidth: "500px", maxHeight: "70vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        <div style={{ padding: "20px", borderBottom: "1px solid #fdf2f8", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 600, color: "#333" }}>
-            {type === "POSTAMAT" ? "постаматы" : "пункты выдачи"}
-          </h3>
-          <button type="button" onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "20px", color: "#8e8e8e" }}>✕</button>
-        </div>
-        <div style={{ flex: 1, overflowY: "auto", padding: "12px 20px" }}>
-          {loading ? (
-            <p style={{ textAlign: "center", color: "#8e8e8e", padding: "20px 0" }}>загрузка...</p>
-          ) : points.length === 0 ? (
-            <p style={{ textAlign: "center", color: "#8e8e8e", padding: "20px 0" }}>пунктов не найдено</p>
-          ) : (
-            points.map((p) => (
-              <button
-                key={p.code}
-                type="button"
-                onClick={() => onSelect({ code: p.code, address: p.address })}
-                style={{ display: "block", width: "100%", textAlign: "left", padding: "12px 0", borderBottom: "1px solid #fdf2f8", background: "none", border: "none", borderBottomWidth: "1px", borderBottomStyle: "solid", borderBottomColor: "#fdf2f8", cursor: "pointer", fontFamily: "inherit" }}
-              >
-                <p style={{ margin: 0, fontSize: "13px", fontWeight: 500, color: "#333" }}>{p.address}</p>
-                {p.workTime && <p style={{ margin: "2px 0 0", fontSize: "11px", color: "#8e8e8e" }}>{p.workTime}</p>}
-              </button>
-            ))
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function CheckoutForm() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [step, setStep] = useState<"form" | "payment" | "success">("form");
+  const [submitting, setSubmitting] = useState(false);
+  const [step, setStep] = useState<"form" | "success">("form");
   const [orderId, setOrderId] = useState<string | null>(null);
   const [orderNumber, setOrderNumber] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isAuth, setIsAuth] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "sbp">("card");
-  const [cityCode, setCityCode] = useState<number | null>(null);
-  const [cityName, setCityName] = useState("");
-  const [deliveryType, setDeliveryType] = useState<"POSTAMAT" | "PVZ">("POSTAMAT");
-  const [selectedPoint, setSelectedPoint] = useState<{ code: string; address: string } | null>(null);
-  const [showPoints, setShowPoints] = useState(false);
 
   useEffect(() => {
     setIsAuth(!!getAccessToken());
@@ -217,7 +102,6 @@ export function CheckoutForm() {
     Promise.all(items.map((i) => fetchProduct(i.id)))
       .then((results) => {
         const found = results.filter((p): p is Product => p !== null);
-        // Добавляем размер из корзины
         const withSize = found.map((p) => {
           const ci = items.find((c) => c.id === p.id);
           return { ...p, size: ci?.size };
@@ -235,6 +119,7 @@ export function CheckoutForm() {
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
+    setSubmitting(true);
 
     const formData = new FormData(event.currentTarget);
     const shippingAddress = {
@@ -249,6 +134,7 @@ export function CheckoutForm() {
 
     if (!isAuth) {
       setError("для оформления заказа необходимо войти в аккаунт.");
+      setSubmitting(false);
       return;
     }
 
@@ -275,73 +161,60 @@ export function CheckoutForm() {
         throw new Error(data.error || "не удалось создать заказ");
       }
 
-      setOrderId(data.data.id);
-      setOrderNumber(data.data.orderNumber);
-      setStep("payment");
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "ошибка при создании заказа");
-    }
-  };
-
-  const handlePaymentSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError(null);
-
-    // Redirect to YuKassa payment
-    try {
-      const token = getAccessToken();
-      const res = await fetch(`${API_BASE}/api/payments/create`, {
+      // Создаём платёж и редиректим на ЮKassa
+      const payRes = await fetch(`${API_BASE}/api/payments/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getAccessToken()}`,
         },
-        body: JSON.stringify({ orderId }),
+        body: JSON.stringify({ orderId: data.data.id }),
       });
-      const data = await res.json();
-      if (data.success && data.data?.paymentUrl) {
-        // Redirect to YuKassa payment page
-        window.location.href = data.data.paymentUrl;
+      const payData = await payRes.json();
+      if (payData.success && payData.data?.paymentUrl) {
+        window.location.href = payData.data.paymentUrl;
       } else {
-        setError(data.error || "не удалось создать платёж");
+        setOrderId(data.data.id);
+        setOrderNumber(data.data.orderNumber);
+        setError(payData.error || "не удалось создать платёж");
+        setSubmitting(false);
       }
-    } catch {
-      setError("ошибка соединения с сервером");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "ошибка при создании заказа");
+      setSubmitting(false);
     }
   };
 
   // ─── Загрузка ───────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="checkout-shell">
-        <div className="checkout-card">
-          <div style={{ display: "flex", justifyContent: "center", padding: "20px 0" }}>
-            <div style={{ width: 28, height: 28, border: "3px solid #fce7f3", borderTopColor: "#f1a7c8", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
-          </div>
+      <section className="auth-shell">
+        <div className="card auth-form" style={{ textAlign: "center", padding: "60px 40px" }}>
+          <div style={{ width: 28, height: 28, border: "3px solid #fce7f3", borderTopColor: "#f1a7c8", borderRadius: "50%", animation: "spin 0.7s linear infinite", margin: "0 auto" }} />
           <style jsx>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
-      </div>
+      </section>
     );
   }
 
   // ─── Пустая корзина ─────────────────────────────────────────────
   if (cartItems.length === 0 || products.length === 0) {
     return (
-      <div className="checkout-shell">
-        <div className="checkout-card">
+      <section className="auth-shell">
+        <div className="card auth-form">
           <h1 style={{ fontSize: "28px", fontWeight: 600, letterSpacing: "-0.5px", color: "#333", margin: "0 0 16px 0" }}>оформление заказа</h1>
           <p className="muted" style={{ marginBottom: "24px" }}>корзина пуста. добавьте товары перед оформлением.</p>
           <Link href="/" className="email-btn">в каталог</Link>
         </div>
-      </div>
+      </section>
     );
   }
 
   // ─── Успех ──────────────────────────────────────────────────────
   if (step === "success") {
     return (
-      <div className="checkout-shell">
-        <div className="checkout-card" style={{ textAlign: "center", padding: "60px 40px" }}>
+      <section className="auth-shell">
+        <div className="card auth-form" style={{ textAlign: "center", padding: "60px 40px" }}>
           <div style={{
             width: "72px",
             height: "72px",
@@ -361,374 +234,164 @@ export function CheckoutForm() {
           <p className="muted" style={{ fontSize: "14px", marginBottom: "32px" }}>спасибо за покупку. мы отправили подтверждение на ваш email.</p>
           <Link href="/orders" className="email-btn">мои заказы</Link>
         </div>
-      </div>
-    );
-  }
-
-  // ─── Оплата ─────────────────────────────────────────────────────
-  if (step === "payment") {
-    return (
-      <>
-        <style>{checkoutStyles}</style>
-        <div className="checkout-shell">
-          <form className="checkout-layout" onSubmit={handlePaymentSubmit}>
-            {/* Левая — форма оплаты */}
-            <div className="checkout-main">
-              <div className="checkout-card">
-                <h1 style={{ fontSize: "26px", fontWeight: 600, letterSpacing: "-0.5px", color: "#333", margin: "0 0 6px 0" }}>оплата заказа</h1>
-                <p className="muted" style={{ fontSize: "14px", marginBottom: "24px" }}>заказ №{orderNumber}</p>
-
-                {paymentMethod === "card" ? (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
-                      <CardLogo />
-                      <span style={{ fontWeight: 600, color: "#333", fontSize: "15px" }}>банковская карта</span>
-                    </div>
-                    <label className="field">
-                      <span>номер карты</span>
-                      <input type="text" placeholder="0000 0000 0000 0000" maxLength={19} required />
-                    </label>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                      <label className="field">
-                        <span>срок действия</span>
-                        <input type="text" placeholder="мм/гг" maxLength={5} required />
-                      </label>
-                      <label className="field">
-                        <span>cvc</span>
-                        <input type="text" placeholder="123" maxLength={3} required />
-                      </label>
-                    </div>
-                    <label className="field">
-                      <span>имя держателя</span>
-                      <input type="text" placeholder="ivan ivanov" required />
-                    </label>
-                  </div>
-                ) : (
-                  <div style={{ textAlign: "center", padding: "32px 0" }}>
-                    <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
-                      <SbpLogo />
-                    </div>
-                    <p style={{ color: "#333", fontWeight: 600, marginBottom: "8px" }}>система быстрых платежей</p>
-                    <p className="muted" style={{ fontSize: "14px" }}>после нажатия кнопки откроется приложение банка для оплаты через сбп</p>
-                  </div>
-                )}
-
-                <p className="muted" style={{ fontSize: "12px", marginTop: "16px" }}>
-                  оплата производится через защищённый шлюз. данные передаются по зашифрованному соединению.
-                </p>
-
-                <button
-                  type="submit"
-                  style={{
-                    marginTop: "8px",
-                    width: "100%",
-                    background: "#f1a7c8",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "40px",
-                    padding: "16px 32px",
-                    fontSize: "16px",
-                    fontWeight: 500,
-                    cursor: "pointer",
-                    fontFamily: "inherit",
-                  }}
-                >
-                  оплатить {total.toLocaleString("ru-RU")} ₽
-                </button>
-                {error && <p style={{ color: "#e05", fontSize: "14px", marginTop: "8px" }}>{error}</p>}
-              </div>
-            </div>
-
-            {/* Правая — итог */}
-            <div className="checkout-sidebar">
-              <OrderSummary products={products} cartItems={cartItems} total={total} />
-            </div>
-          </form>
-        </div>
-      </>
+      </section>
     );
   }
 
   // ─── Основная форма ─────────────────────────────────────────────
   return (
-    <>
-      <style>{checkoutStyles}</style>
-      <div className="checkout-shell">
-        <form className="checkout-layout" onSubmit={handleFormSubmit}>
-          {/* Левая — поля */}
-          <div className="checkout-main">
-            {/* Заголовок */}
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "4px" }}>
-              <button
-                type="button"
-                onClick={() => router.push("/cart")}
-                style={{
-                  background: "white",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: "8px",
-                  marginLeft: "-8px",
-                  display: "flex",
-                  alignItems: "center",
-                  borderRadius: "8px",
-                  boxShadow: "none",
-                }}
-                aria-label="назад"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" stroke="#f1a7c8" strokeWidth="2" fill="none">
-                  <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-              </button>
-              <h1 style={{ fontSize: "26px", fontWeight: 600, letterSpacing: "-0.5px", color: "#333", margin: 0 }}>оформление заказа</h1>
-            </div>
-
-            {/* Предупреждение о входе */}
-            {!isAuth && (
-              <div style={{ padding: "16px 20px", background: "#fff8e1", border: "1px solid #ffe082", borderRadius: "16px" }}>
-                <p style={{ margin: 0, fontSize: "14px", color: "#7a5c00" }}>
-                  <strong>требуется авторизация.</strong>{" "}
-                  <Link href="/login" style={{ textDecoration: "underline", color: "#f1a7c8" }}>войдите</Link>{" "}
-                  или{" "}
-                  <Link href="/register" style={{ textDecoration: "underline", color: "#f1a7c8" }}>зарегистрируйтесь</Link>.
-                </p>
-              </div>
-            )}
-
-            {/* 1. Данные */}
-            <div className="checkout-card">
-              <h2 style={{ margin: "0 0 16px 0", fontSize: "16px", fontWeight: 600, color: "#333" }}>1. данные</h2>
-              <div className="fields-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                <label className="field">
-                  <span>фио</span>
-                  <input name="fullName" type="text" placeholder="иван иванов" required />
-                </label>
-                <label className="field">
-                  <span>email</span>
-                  <input name="email" type="email" placeholder="mail@example.com" required />
-                </label>
-              </div>
-              <div style={{ marginTop: "12px" }}>
-                <label className="field">
-                  <span>телефон</span>
-                  <input name="phone" type="tel" placeholder="+7 (999) 000-00-00" required />
-                </label>
-              </div>
-            </div>
-
-            {/* 2. Город доставки */}
-            <div className="checkout-card">
-              <h2 style={{ margin: "0 0 8px 0", fontSize: "16px", fontWeight: 600, color: "#333" }}>2. город доставки</h2>
-              <p style={{ margin: "0 0 12px 0", fontSize: "13px", color: "#f1a7c8" }}>
-                доставка осуществляется в города России, Казахстана и Беларуси
-              </p>
-              <CitySearch onSelect={(city) => { setCityCode(city.code); setCityName(`${city.city}, ${city.country}`); setSelectedPoint(null); }} />
-              <input type="hidden" name="city" value={cityName} />
-              <p style={{ margin: "8px 0 0", fontSize: "12px", color: "#8e8e8e" }}>
-                введите свой город в строке. затем выберите подходящий пункт сдэк ниже
-              </p>
-            </div>
-
-            {/* 3. Доставка — выбор пункта */}
-            <div className="checkout-card">
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                <h2 style={{ margin: 0, fontSize: "16px", fontWeight: 600, color: "#333" }}>3. доставка</h2>
-                <img src="https://logo-teka.com/wp-content/uploads/2025/06/cdek-logo.svg" alt="СДЭК" style={{ height: "18px", objectFit: "contain" }} />
-              </div>
-
-              {/* Тип: постамат / пункт выдачи */}
-              <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
-                <button
-                  type="button"
-                  onClick={() => setDeliveryType("POSTAMAT")}
-                  style={{
-                    flex: 1,
-                    padding: "12px",
-                    borderRadius: "40px",
-                    border: deliveryType === "POSTAMAT" ? "2px solid #f1a7c8" : "2px solid #fdf2f8",
-                    background: deliveryType === "POSTAMAT" ? "#fff5f8" : "#fff",
-                    cursor: "pointer",
-                    fontSize: "13px",
-                    fontWeight: 500,
-                    color: "#333",
-                    fontFamily: "inherit",
-                  }}
-                >
-                  сдэк (постамат)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setDeliveryType("PVZ")}
-                  style={{
-                    flex: 1,
-                    padding: "12px",
-                    borderRadius: "40px",
-                    border: deliveryType === "PVZ" ? "2px solid #f1a7c8" : "2px solid #fdf2f8",
-                    background: deliveryType === "PVZ" ? "#fff5f8" : "#fff",
-                    cursor: "pointer",
-                    fontSize: "13px",
-                    fontWeight: 500,
-                    color: "#333",
-                    fontFamily: "inherit",
-                  }}
-                >
-                  сдэк (пункт выдачи)
-                </button>
-              </div>
-
-              <p style={{ margin: "0 0 12px", fontSize: "13px", color: "#8e8e8e" }}>
-                {deliveryType === "POSTAMAT" ? "доставка заказа в постаматы." : "доставка заказа в пункты выдачи."}
-              </p>
-
-              {/* Выбранный пункт */}
-              {selectedPoint && (
-                <p style={{ margin: "0 0 12px", fontSize: "13px", color: "#f1a7c8" }}>
-                  {selectedPoint.address}
-                </p>
-              )}
-
-              <input type="hidden" name="address" value={selectedPoint?.address || ""} />
-
-              <button
-                type="button"
-                onClick={() => setShowPoints(true)}
-                disabled={!cityCode}
-                style={{
-                  width: "100%",
-                  padding: "14px",
-                  borderRadius: "40px",
-                  border: "none",
-                  background: cityCode ? "#f1a7c8" : "#fce7f3",
-                  color: "#fff",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  cursor: cityCode ? "pointer" : "not-allowed",
-                  fontFamily: "inherit",
-                }}
-              >
-                {selectedPoint ? "изменить пункт" : `выбрать ${deliveryType === "POSTAMAT" ? "постамат" : "пункт выдачи"}`}
-              </button>
-
-              {/* Модалка с пунктами */}
-              {showPoints && cityCode && (
-                <PointsModal
-                  cityCode={cityCode}
-                  type={deliveryType}
-                  onSelect={(point) => { setSelectedPoint(point); setShowPoints(false); }}
-                  onClose={() => setShowPoints(false)}
-                />
-              )}
-
-              {/* Комментарий */}
-              <div style={{ marginTop: "16px" }}>
-                <label className="field">
-                  <span>комментарий к заказу</span>
-                  <textarea name="comment" className="textarea" placeholder="пожелания к заказу" rows={2} />
-                </label>
-              </div>
-            </div>
-
-            {/* Способ оплаты */}
-            <div className="checkout-card">
-              <h2 style={{ margin: "0 0 16px 0", fontSize: "16px", fontWeight: 600, color: "#333" }}>способ оплаты</h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                {/* Карта */}
-                <label style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "14px",
-                  padding: "14px 16px",
-                  borderRadius: "14px",
-                  border: `2px solid ${paymentMethod === "card" ? "#f1a7c8" : "#fdf2f8"}`,
-                  background: paymentMethod === "card" ? "#fff5f8" : "#fffbfd",
-                  cursor: "pointer",
-                  transition: "border-color 0.2s, background 0.2s",
-                }}>
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="card"
-                    checked={paymentMethod === "card"}
-                    onChange={() => setPaymentMethod("card")}
-                    style={{ display: "none" }}
-                  />
-                  <CardLogo />
-                  <div>
-                    <p style={{ margin: 0, fontWeight: 600, fontSize: "14px", color: "#333" }}>банковская карта</p>
-                    <p style={{ margin: 0, fontSize: "12px", color: "#8e8e8e" }}>visa, mastercard, мир</p>
-                  </div>
-                  {paymentMethod === "card" && (
-                    <div style={{ marginLeft: "auto", width: "20px", height: "20px", borderRadius: "50%", background: "#f1a7c8", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
-                        <polyline points="1.5 5 4 7.5 8.5 2.5"/>
-                      </svg>
-                    </div>
-                  )}
-                </label>
-
-                {/* СБП */}
-                <label style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "14px",
-                  padding: "14px 16px",
-                  borderRadius: "14px",
-                  border: `2px solid ${paymentMethod === "sbp" ? "#f1a7c8" : "#fdf2f8"}`,
-                  background: paymentMethod === "sbp" ? "#fff5f8" : "#fffbfd",
-                  cursor: "pointer",
-                  transition: "border-color 0.2s, background 0.2s",
-                }}>
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="sbp"
-                    checked={paymentMethod === "sbp"}
-                    onChange={() => setPaymentMethod("sbp")}
-                    style={{ display: "none" }}
-                  />
-                  <SbpLogo />
-                  <div>
-                    <p style={{ margin: 0, fontWeight: 600, fontSize: "14px", color: "#333" }}>система быстрых платежей</p>
-                    <p style={{ margin: 0, fontSize: "12px", color: "#8e8e8e" }}>оплата через приложение банка</p>
-                  </div>
-                  {paymentMethod === "sbp" && (
-                    <div style={{ marginLeft: "auto", width: "20px", height: "20px", borderRadius: "50%", background: "#f1a7c8", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
-                        <polyline points="1.5 5 4 7.5 8.5 2.5"/>
-                      </svg>
-                    </div>
-                  )}
-                </label>
-              </div>
-            </div>
-
-            {error && <p style={{ color: "#e05", fontSize: "14px" }}>{error}</p>}
-
+    <section className="checkout-shell">
+      <form className="checkout-grid" onSubmit={handleFormSubmit}>
+        {/* Левая колонка — форма */}
+        <div className="checkout-left">
+          {/* Заголовок */}
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
             <button
-              type="submit"
+              type="button"
+              onClick={() => router.push("/cart")}
               style={{
-                width: "100%",
-                background: "#f1a7c8",
-                color: "#fff",
+                background: "none",
                 border: "none",
-                borderRadius: "40px",
-                padding: "18px 32px",
-                fontSize: "16px",
-                fontWeight: 500,
                 cursor: "pointer",
-                fontFamily: "inherit",
+                padding: "8px",
+                marginLeft: "-8px",
+                display: "flex",
+                alignItems: "center",
+                borderRadius: "8px",
               }}
+              aria-label="назад"
             >
-              перейти к оплате — {total.toLocaleString("ru-RU")} ₽
+              <svg width="24" height="24" viewBox="0 0 24 24" stroke="#f1a7c8" strokeWidth="2" fill="none">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
             </button>
+            <h1 style={{ fontSize: "26px", fontWeight: 600, letterSpacing: "-0.5px", color: "#333", margin: 0 }}>оформление заказа</h1>
           </div>
 
-          {/* Правая — корзина */}
-          <div className="checkout-sidebar">
-            <OrderSummary products={products} cartItems={cartItems} total={total} />
+          {/* Предупреждение о входе */}
+          {!isAuth && (
+            <div className="checkout-warning">
+              <p style={{ margin: 0, fontSize: "14px", color: "#7a5c00" }}>
+                <strong>требуется авторизация.</strong>{" "}
+                <Link href="/login" style={{ textDecoration: "underline", color: "#f1a7c8" }}>войдите</Link>{" "}
+                или{" "}
+                <Link href="/register" style={{ textDecoration: "underline", color: "#f1a7c8" }}>зарегистрируйтесь</Link>.
+              </p>
+            </div>
+          )}
+
+          {/* 1. Данные */}
+          <div className="checkout-section">
+            <h2 className="checkout-section-title">1. данные получателя</h2>
+            <div className="checkout-fields-row">
+              <label className="field">
+                <span>фио</span>
+                <input name="fullName" type="text" placeholder="иван иванов" required />
+              </label>
+              <label className="field">
+                <span>email</span>
+                <input name="email" type="email" placeholder="mail@example.com" required />
+              </label>
+            </div>
+            <label className="field">
+              <span>телефон</span>
+              <input name="phone" type="tel" placeholder="+7 (999) 000-00-00" required />
+            </label>
           </div>
-        </form>
-      </div>
-    </>
+
+          {/* 2. Адрес доставки */}
+          <div className="checkout-section">
+            <h2 className="checkout-section-title">2. адрес доставки</h2>
+            <p className="checkout-hint">доставка осуществляется через сдэк в города России, Казахстана и Беларуси</p>
+            <label className="field">
+              <span>город</span>
+              <input name="city" type="text" placeholder="москва" required />
+            </label>
+            <label className="field">
+              <span>адрес пункта выдачи / постамата сдэк</span>
+              <input name="address" type="text" placeholder="ул. примерная, д. 1 (пункт сдэк)" required />
+            </label>
+            <label className="field">
+              <span>комментарий к заказу</span>
+              <textarea name="comment" placeholder="пожелания к заказу (необязательно)" rows={2} />
+            </label>
+          </div>
+
+          {/* 3. Способ оплаты */}
+          <div className="checkout-section">
+            <h2 className="checkout-section-title">3. способ оплаты</h2>
+            <div className="checkout-payment-options">
+              {/* Карта */}
+              <label className={`checkout-payment-option ${paymentMethod === "card" ? "active" : ""}`}>
+                <input
+                  type="radio"
+                  name="payment"
+                  value="card"
+                  checked={paymentMethod === "card"}
+                  onChange={() => setPaymentMethod("card")}
+                  style={{ display: "none" }}
+                />
+                <CardLogo />
+                <div>
+                  <p className="checkout-payment-name">банковская карта</p>
+                  <p className="checkout-payment-desc">visa, mastercard, мир</p>
+                </div>
+                {paymentMethod === "card" && (
+                  <div className="checkout-payment-check">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
+                      <polyline points="1.5 5 4 7.5 8.5 2.5"/>
+                    </svg>
+                  </div>
+                )}
+              </label>
+
+              {/* СБП */}
+              <label className={`checkout-payment-option ${paymentMethod === "sbp" ? "active" : ""}`}>
+                <input
+                  type="radio"
+                  name="payment"
+                  value="sbp"
+                  checked={paymentMethod === "sbp"}
+                  onChange={() => setPaymentMethod("sbp")}
+                  style={{ display: "none" }}
+                />
+                <SbpLogo />
+                <div>
+                  <p className="checkout-payment-name">система быстрых платежей</p>
+                  <p className="checkout-payment-desc">оплата через приложение банка</p>
+                </div>
+                {paymentMethod === "sbp" && (
+                  <div className="checkout-payment-check">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
+                      <polyline points="1.5 5 4 7.5 8.5 2.5"/>
+                    </svg>
+                  </div>
+                )}
+              </label>
+            </div>
+          </div>
+
+          {error && <p className="checkout-error">{error}</p>}
+
+          <button type="submit" className="email-btn checkout-submit" disabled={submitting}>
+            {submitting ? (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 0.7s linear infinite", display: "inline-block" }} />
+                оформляем...
+                <style jsx>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+              </span>
+            ) : (
+              `оплатить — ${total.toLocaleString("ru-RU")} ₽`
+            )}
+          </button>
+        </div>
+
+        {/* Правая колонка — сводка заказа */}
+        <div className="checkout-right">
+          <OrderSummary products={products} cartItems={cartItems} total={total} />
+        </div>
+      </form>
+    </section>
   );
 }
 
@@ -743,35 +406,17 @@ function OrderSummary({
   total: number;
 }) {
   return (
-    <div style={{
-      background: "#fff",
-      border: "1px solid #fdf2f8",
-      borderRadius: "20px",
-      padding: "20px",
-      position: "sticky",
-      top: "24px",
-    }}>
-      <h2 style={{ margin: "0 0 16px 0", fontSize: "16px", fontWeight: 600, color: "#333" }}>ваш заказ</h2>
-      <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "16px" }}>
+    <div className="checkout-summary">
+      <h2 className="checkout-section-title">ваш заказ</h2>
+      <div className="checkout-summary-items">
         {products.map((p) => {
           const qty = cartItems.find((c) => c.id === p.id)?.quantity ?? 1;
           const size = cartItems.find((c) => c.id === p.id)?.size;
           return (
-            <div key={p.id} style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-              {/* Миниатюра */}
-              <div style={{
-                width: "52px",
-                height: "52px",
-                borderRadius: "10px",
-                background: "linear-gradient(180deg, #fff5f8 0%, #fce7f3 100%)",
-                flexShrink: 0,
-                overflow: "hidden",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}>
+            <div key={p.id} className="checkout-summary-item">
+              <div className="checkout-summary-thumb">
                 {p.imageUrl ? (
-                  <img src={p.imageUrl} alt={p.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img src={p.imageUrl} alt={p.name} />
                 ) : (
                   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#f1a7c8" strokeWidth="1.8">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
@@ -780,73 +425,22 @@ function OrderSummary({
                   </svg>
                 )}
               </div>
-              {/* Инфо */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ margin: "0 0 2px 0", fontSize: "13px", fontWeight: 600, color: "#333", lineHeight: 1.3 }}>{p.name}</p>
-                {size && (
-                  <span style={{ fontSize: "11px", color: "#f1a7c8", background: "#fff5f8", border: "1px solid #fce7f3", borderRadius: "20px", padding: "1px 8px", display: "inline-block", marginBottom: "2px" }}>
-                    {size}
-                  </span>
-                )}
-                <p style={{ margin: 0, fontSize: "12px", color: "#8e8e8e" }}>× {qty}</p>
+                <p className="checkout-summary-name">{p.name}</p>
+                {size && <span className="checkout-summary-size">{size}</span>}
+                <p className="checkout-summary-qty">× {qty}</p>
               </div>
-              <p style={{ margin: 0, fontWeight: 700, fontSize: "14px", color: "#333", flexShrink: 0 }}>
+              <p className="checkout-summary-price">
                 {(p.price * qty).toLocaleString("ru-RU")} ₽
               </p>
             </div>
           );
         })}
       </div>
-      <div style={{ borderTop: "1px solid #fdf2f8", paddingTop: "14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontSize: "14px", color: "#8e8e8e" }}>итого</span>
-        <strong style={{ fontSize: "20px", color: "#333", fontWeight: 700 }}>{total.toLocaleString("ru-RU")} ₽</strong>
+      <div className="checkout-summary-total">
+        <span>итого</span>
+        <strong>{total.toLocaleString("ru-RU")} ₽</strong>
       </div>
     </div>
   );
 }
-
-// ─── Стили ────────────────────────────────────────────────────────
-const checkoutStyles = `
-  .checkout-shell {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 24px 16px 60px;
-  }
-  .checkout-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  @media (min-width: 768px) {
-    .checkout-layout {
-      grid-template-columns: 1fr 360px;
-      align-items: start;
-    }
-  }
-  .checkout-main {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .checkout-sidebar {
-    /* sticky handled inline */
-  }
-  .checkout-card {
-    background: #fff;
-    border: 1px solid #fdf2f8;
-    border-radius: 20px;
-    padding: 20px;
-  }
-  @media (max-width: 767px) {
-    .checkout-shell {
-      padding: 16px 12px 80px;
-    }
-    .checkout-card {
-      padding: 16px;
-      border-radius: 16px;
-    }
-    .checkout-card .fields-row {
-      grid-template-columns: 1fr !important;
-    }
-  }
-`;
