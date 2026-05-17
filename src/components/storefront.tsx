@@ -107,14 +107,15 @@ function writeCart(items: CartItem[]) {
 
 function addToCart(id: string, size?: string) {
   const cart = readCart();
-  const existing = cart.find((item) => item.id === id && item.size === size);
+  const strId = String(id);
+  const existing = cart.find((item) => String(item.id) === strId && item.size === size);
   const updated = existing
     ? cart.map((item) =>
-        item.id === id && item.size === size
+        String(item.id) === strId && item.size === size
           ? { ...item, quantity: item.quantity + 1 }
           : item,
       )
-    : [...cart, { id, quantity: 1, size }];
+    : [...cart, { id: strId, quantity: 1, size }];
   writeCart(updated);
 }
 

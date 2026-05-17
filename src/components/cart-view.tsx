@@ -92,27 +92,42 @@ export function CartView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [removedNames, setRemovedNames] = useState<string[]>([]);
+  const [productsLoaded, setProductsLoaded] = useState(false);
 
   useEffect(() => {
     const stored = readCart();
-    setItems(stored);
+    // Deduplicate: merge items with same id+size
+    const deduped: CartItem[] = [];
+    for (const item of stored) {
+      const existing = deduped.find((d) => String(d.id) === String(item.id) && d.size === item.size);
+      if (existing) {
+        existing.quantity += item.quantity;
+      } else {
+        deduped.push({ ...item, id: String(item.id) });
+      }
+    }
+    if (deduped.length !== stored.length) {
+      writeCart(deduped);
+    }
+    setItems(deduped);
   }, []);
 
+  // Load products only once on mount (when items first become available)
   useEffect(() => {
-    let cancelled = false;
-
-    if (items.length === 0) {
-      setEnriched([]);
-      setLoading(false);
-      setRemovedNames([]);
+    if (productsLoaded || items.length === 0) {
+      if (items.length === 0) setLoading(false);
       return;
     }
 
+    let cancelled = false;
     setLoading(true);
     setError(null);
     setRemovedNames([]);
 
-    Promise.allSettled(items.map((i) => fetchProductById(i.id)))
+    // Deduplicate product IDs to avoid fetching same product twice
+    const uniqueIds = [...new Set(items.map((i) => String(i.id)))];
+
+    Promise.allSettled(uniqueIds.map((id) => fetchProductById(id)))
       .then((results) => {
         if (cancelled) return;
 
@@ -123,25 +138,27 @@ export function CartView() {
           if (result.status === "fulfilled" && result.value) {
             foundProducts.push(result.value);
           } else {
-            missingIds.push(items[idx].id);
+            missingIds.push(uniqueIds[idx]);
           }
         });
 
         if (missingIds.length > 0) {
-          setItems((prev) => prev.filter((i) => !missingIds.includes(i.id)));
-          writeCart(items.filter((i) => !missingIds.includes(i.id)));
+          const cleaned = items.filter((i) => !missingIds.includes(String(i.id)));
+          setItems(cleaned);
+          writeCart(cleaned);
           setRemovedNames(missingIds.map((id) => `товар #${id}`));
         }
 
-        const mapped: EnrichedItem[] = foundProducts
-          .flatMap((p) => {
-            const cartItem = items.find((i) => i.id === p.id);
-            if (!cartItem) return [];
-            const item: EnrichedItem = { ...p, quantity: cartItem.quantity, size: cartItem.size };
-            return [item];
+        const mapped: EnrichedItem[] = items
+          .filter((cartItem) => !missingIds.includes(String(cartItem.id)))
+          .flatMap((cartItem) => {
+            const p = foundProducts.find((fp) => String(fp.id) === String(cartItem.id));
+            if (!p) return [];
+            return [{ ...p, quantity: cartItem.quantity, size: cartItem.size }];
           });
 
         setEnriched(mapped);
+        setProductsLoaded(true);
       })
       .catch((err: Error) => {
         if (!cancelled) setError(err.message);
@@ -153,7 +170,21 @@ export function CartView() {
     return () => {
       cancelled = true;
     };
-  }, [items]);
+  }, [items, productsLoaded]);
+
+  // Update enriched locally when items change (after initial load)
+  useEffect(() => {
+    if (!productsLoaded) return;
+    setEnriched((prev) =>
+      prev
+        .map((e) => {
+          const cartItem = items.find((i) => String(i.id) === String(e.id) && i.size === e.size);
+          if (!cartItem) return null;
+          return { ...e, quantity: cartItem.quantity };
+        })
+        .filter(Boolean) as EnrichedItem[]
+    );
+  }, [items, productsLoaded]);
 
   const total = useMemo(
     () => enriched.reduce((sum, i) => sum + i.price * i.quantity, 0),
