@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "edge";
-
-// On Cloudflare Pages, NEXT_PUBLIC_* vars are inlined at build time in client bundles
-// but may not be available in edge route handlers.
-// We use a server-side env var API_URL (set in Cloudflare Pages env settings),
-// with NEXT_PUBLIC_API_URL as fallback (works when inlined at build time),
-// and a hardcoded production URL as final fallback.
+// Node.js runtime (works on Vercel, Railway, and other Node.js platforms)
+// For Cloudflare Pages edge runtime, use export const runtime = "edge"
 const API_URL =
   process.env.API_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
