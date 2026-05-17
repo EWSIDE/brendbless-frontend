@@ -704,12 +704,12 @@ button[disabled]::after {
 }
 
 .size-chip-btn {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   padding: 0;
   border: 1.5px solid #f1a7c8;
   border-radius: 50%;
-  font-size: 11px;
+  font-size: 10px;
   color: #f1a7c8;
   background: transparent;
   cursor: pointer;
@@ -728,8 +728,8 @@ button[disabled]::after {
 }
 
 .size-chip-btn[data-selected="true"] {
-  background: #fce7f3;
-  color: #db2777;
+  background: #f1a7c8;
+  color: #fff;
   border-color: #f1a7c8;
 }
 
