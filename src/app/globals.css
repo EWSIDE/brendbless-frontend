@@ -417,12 +417,10 @@ main {
 /* Плавное появление карточек товаров */
 .card {
   animation: cardFadeIn 0.4s ease both;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-hover);
+  opacity: 0.9;
 }
 
 @keyframes cardFadeIn {
@@ -568,28 +566,28 @@ button[disabled]::after {
 .product-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  max-width: 1000px;
+  gap: 32px 24px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 /* ─── Карточка товара ───────────────────────────────────────────── */
 .card {
-  background: var(--bg-card);
-  border: 1px solid #fdf2f8;
-  border-radius: 24px;
-  overflow: hidden;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
   box-shadow: none;
 }
 
 .card:hover {
-  border-color: #f9a8d4;
+  border-color: transparent;
 }
 
 .product-image-placeholder {
   width: 100%;
   aspect-ratio: 3 / 4;
-  background: linear-gradient(180deg, #fefcfd 0%, #fdf2f8 100%);
+  background: #fff;
   gap: 8px;
   color: var(--pink-400);
   font-size: 14px;
@@ -648,10 +646,10 @@ button[disabled]::after {
 }
 
 .card-content {
-  padding: 16px;
+  padding: 14px 0 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .sizes {
@@ -764,21 +762,22 @@ button[disabled]::after {
 
 /* ─── Card price row layout ─────────────────────────────────────── */
 
-/* Desktop: цена сверху по центру, размеры и корзина снизу */
+/* Desktop: цена слева, размеры по центру, корзина справа — одна строка */
 .card-price-row {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 8px;
+  flex-wrap: nowrap;
 }
 
 .price-block {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
-  justify-content: center;
-  width: 100%;
+  justify-content: flex-start;
+  width: auto;
 }
 
 /* sizes-and-cart: обёртка для размеров и кнопки корзины */
@@ -787,21 +786,21 @@ button[disabled]::after {
   align-items: center;
   gap: 6px;
   flex: 1 1 auto;
-  width: 100%;
-  justify-content: center;
+  width: auto;
+  justify-content: flex-end;
 }
 
 .sizes-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
-  flex: 1 1 auto;
-  justify-content: flex-start;
-  align-content: flex-start;
+  gap: 4px;
+  flex: 0 1 auto;
+  justify-content: flex-end;
+  align-content: center;
 }
 
 .add-to-cart-icon-btn {
-  margin-left: 0;
+  margin-left: 4px;
   flex-shrink: 0;
 }
 
