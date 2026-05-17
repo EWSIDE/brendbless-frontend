@@ -78,6 +78,117 @@ function CardLogo() {
   );
 }
 
+// ─── Типы СДЭК ───────────────────────────────────────────────────
+type CdekCity = { code: number; city: string; region: string; country: string };
+type CdekPoint = { code: string; name: string; address: string; type: string; workTime: string };
+
+// ─── Поиск города ─────────────────────────────────────────────────
+function CitySearch({ onSelect }: { onSelect: (city: CdekCity) => void }) {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<CdekCity[]>([]);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (query.length < 2) { setResults([]); return; }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/cdek/cities?q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        if (data.success) setResults(data.data);
+      } catch { /* ignore */ }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  return (
+    <div style={{ position: "relative" }}>
+      <div style={{ position: "relative" }}>
+        <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#8e8e8e", fontSize: "14px" }}>🔍</span>
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
+          onFocus={() => setOpen(true)}
+          placeholder="москва, россия"
+          style={{
+            width: "100%",
+            padding: "12px 36px 12px 36px",
+            border: "1px solid #fdf2f8",
+            borderRadius: "12px",
+            fontSize: "14px",
+            fontFamily: "inherit",
+            background: "#fff",
+          }}
+        />
+        {query && (
+          <button type="button" onClick={() => { setQuery(""); setResults([]); }} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#8e8e8e", fontSize: "16px" }}>✕</button>
+        )}
+      </div>
+      {open && results.length > 0 && (
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid #fdf2f8", borderRadius: "12px", marginTop: "4px", maxHeight: "200px", overflowY: "auto", zIndex: 50, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}>
+          {results.map((c) => (
+            <button
+              key={c.code}
+              type="button"
+              onClick={() => { onSelect(c); setQuery(`${c.city}, ${c.country}`); setOpen(false); }}
+              style={{ display: "block", width: "100%", textAlign: "left", padding: "10px 14px", border: "none", background: "none", cursor: "pointer", fontSize: "13px", color: "#333", fontFamily: "inherit" }}
+            >
+              {c.city}, {c.region}, {c.country}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Модалка пунктов выдачи ───────────────────────────────────────
+function PointsModal({ cityCode, type, onSelect, onClose }: { cityCode: number; type: "PVZ" | "POSTAMAT"; onSelect: (point: { code: string; address: string }) => void; onClose: () => void }) {
+  const [points, setPoints] = useState<CdekPoint[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`${API_BASE}/api/cdek/points?city_code=${cityCode}&type=${type}`)
+      .then((r) => r.json())
+      .then((data) => { if (data.success) setPoints(data.data); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [cityCode, type]);
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
+      <div style={{ background: "#fff", borderRadius: "20px", width: "100%", maxWidth: "500px", maxHeight: "70vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <div style={{ padding: "20px", borderBottom: "1px solid #fdf2f8", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 600, color: "#333" }}>
+            {type === "POSTAMAT" ? "постаматы" : "пункты выдачи"}
+          </h3>
+          <button type="button" onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "20px", color: "#8e8e8e" }}>✕</button>
+        </div>
+        <div style={{ flex: 1, overflowY: "auto", padding: "12px 20px" }}>
+          {loading ? (
+            <p style={{ textAlign: "center", color: "#8e8e8e", padding: "20px 0" }}>загрузка...</p>
+          ) : points.length === 0 ? (
+            <p style={{ textAlign: "center", color: "#8e8e8e", padding: "20px 0" }}>пунктов не найдено</p>
+          ) : (
+            points.map((p) => (
+              <button
+                key={p.code}
+                type="button"
+                onClick={() => onSelect({ code: p.code, address: p.address })}
+                style={{ display: "block", width: "100%", textAlign: "left", padding: "12px 0", borderBottom: "1px solid #fdf2f8", background: "none", border: "none", borderBottomWidth: "1px", borderBottomStyle: "solid", borderBottomColor: "#fdf2f8", cursor: "pointer", fontFamily: "inherit" }}
+              >
+                <p style={{ margin: 0, fontSize: "13px", fontWeight: 500, color: "#333" }}>{p.address}</p>
+                {p.workTime && <p style={{ margin: "2px 0 0", fontSize: "11px", color: "#8e8e8e" }}>{p.workTime}</p>}
+              </button>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function CheckoutForm() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -89,6 +200,11 @@ export function CheckoutForm() {
   const [error, setError] = useState<string | null>(null);
   const [isAuth, setIsAuth] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "sbp">("card");
+  const [cityCode, setCityCode] = useState<number | null>(null);
+  const [cityName, setCityName] = useState("");
+  const [deliveryType, setDeliveryType] = useState<"POSTAMAT" | "PVZ">("POSTAMAT");
+  const [selectedPoint, setSelectedPoint] = useState<{ code: string; address: string } | null>(null);
+  const [showPoints, setShowPoints] = useState(false);
 
   useEffect(() => {
     setIsAuth(!!getAccessToken());
@@ -378,14 +494,20 @@ export function CheckoutForm() {
               </div>
             )}
 
-            {/* Данные получателя */}
+            {/* 1. Данные */}
             <div className="checkout-card">
-              <h2 style={{ margin: "0 0 16px 0", fontSize: "16px", fontWeight: 600, color: "#333" }}>получатель</h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <h2 style={{ margin: "0 0 16px 0", fontSize: "16px", fontWeight: 600, color: "#333" }}>1. данные</h2>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <label className="field">
-                  <span>имя и фамилия</span>
+                  <span>фио</span>
                   <input name="fullName" type="text" placeholder="иван иванов" required />
                 </label>
+                <label className="field">
+                  <span>email</span>
+                  <input name="email" type="email" placeholder="mail@example.com" required />
+                </label>
+              </div>
+              <div style={{ marginTop: "12px" }}>
                 <label className="field">
                   <span>телефон</span>
                   <input name="phone" type="tel" placeholder="+7 (999) 000-00-00" required />
@@ -393,25 +515,114 @@ export function CheckoutForm() {
               </div>
             </div>
 
-            {/* Доставка СДЭК */}
+            {/* 2. Город доставки */}
+            <div className="checkout-card">
+              <h2 style={{ margin: "0 0 8px 0", fontSize: "16px", fontWeight: 600, color: "#333" }}>2. город доставки</h2>
+              <p style={{ margin: "0 0 12px 0", fontSize: "13px", color: "#f1a7c8" }}>
+                доставка осуществляется в города России, Казахстана и Беларуси
+              </p>
+              <CitySearch onSelect={(city) => { setCityCode(city.code); setCityName(`${city.city}, ${city.country}`); setSelectedPoint(null); }} />
+              <input type="hidden" name="city" value={cityName} />
+              <p style={{ margin: "8px 0 0", fontSize: "12px", color: "#8e8e8e" }}>
+                введите свой город в строке. затем выберите подходящий пункт сдэк ниже
+              </p>
+            </div>
+
+            {/* 3. Доставка — выбор пункта */}
             <div className="checkout-card">
               <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                <h2 style={{ margin: 0, fontSize: "16px", fontWeight: 600, color: "#333" }}>доставка</h2>
-                {/* Логотип СДЭК */}
+                <h2 style={{ margin: 0, fontSize: "16px", fontWeight: 600, color: "#333" }}>3. доставка</h2>
                 <img src="https://logo-teka.com/wp-content/uploads/2025/06/cdek-logo.svg" alt="СДЭК" style={{ height: "18px", objectFit: "contain" }} />
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                <label className="field">
-                  <span>город</span>
-                  <input name="city" type="text" placeholder="москва" required />
-                </label>
-                <label className="field">
-                  <span>адрес (улица, дом, квартира)</span>
-                  <input name="address" type="text" placeholder="ул. пушкина, д. 1, кв. 10" required />
-                </label>
+
+              {/* Тип: постамат / пункт выдачи */}
+              <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
+                <button
+                  type="button"
+                  onClick={() => setDeliveryType("POSTAMAT")}
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    borderRadius: "40px",
+                    border: deliveryType === "POSTAMAT" ? "2px solid #f1a7c8" : "2px solid #fdf2f8",
+                    background: deliveryType === "POSTAMAT" ? "#fff5f8" : "#fff",
+                    cursor: "pointer",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    color: "#333",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  сдэк (постамат)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDeliveryType("PVZ")}
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    borderRadius: "40px",
+                    border: deliveryType === "PVZ" ? "2px solid #f1a7c8" : "2px solid #fdf2f8",
+                    background: deliveryType === "PVZ" ? "#fff5f8" : "#fff",
+                    cursor: "pointer",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    color: "#333",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  сдэк (пункт выдачи)
+                </button>
+              </div>
+
+              <p style={{ margin: "0 0 12px", fontSize: "13px", color: "#8e8e8e" }}>
+                {deliveryType === "POSTAMAT" ? "доставка заказа в постаматы." : "доставка заказа в пункты выдачи."}
+              </p>
+
+              {/* Выбранный пункт */}
+              {selectedPoint && (
+                <p style={{ margin: "0 0 12px", fontSize: "13px", color: "#f1a7c8" }}>
+                  {selectedPoint.address}
+                </p>
+              )}
+
+              <input type="hidden" name="address" value={selectedPoint?.address || ""} />
+
+              <button
+                type="button"
+                onClick={() => setShowPoints(true)}
+                disabled={!cityCode}
+                style={{
+                  width: "100%",
+                  padding: "14px",
+                  borderRadius: "40px",
+                  border: "none",
+                  background: cityCode ? "#f1a7c8" : "#fce7f3",
+                  color: "#fff",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  cursor: cityCode ? "pointer" : "not-allowed",
+                  fontFamily: "inherit",
+                }}
+              >
+                {selectedPoint ? "изменить пункт" : `выбрать ${deliveryType === "POSTAMAT" ? "постамат" : "пункт выдачи"}`}
+              </button>
+
+              {/* Модалка с пунктами */}
+              {showPoints && cityCode && (
+                <PointsModal
+                  cityCode={cityCode}
+                  type={deliveryType}
+                  onSelect={(point) => { setSelectedPoint(point); setShowPoints(false); }}
+                  onClose={() => setShowPoints(false)}
+                />
+              )}
+
+              {/* Комментарий */}
+              <div style={{ marginTop: "16px" }}>
                 <label className="field">
                   <span>комментарий к заказу</span>
-                  <textarea name="comment" className="textarea" placeholder="код домофона, удобное время доставки" rows={2} />
+                  <textarea name="comment" className="textarea" placeholder="пожелания к заказу" rows={2} />
                 </label>
               </div>
             </div>
