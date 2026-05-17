@@ -23,9 +23,9 @@
   --text-light: #5f5160;
   --bg: #ffffff;
   --bg-card: #ffffff;
-  --shadow-soft: none;
-  --shadow-hover: none;
-  --shadow-hero: none;
+  --shadow-soft: 0 1px 3px rgba(241, 167, 200, 0.06), 0 4px 16px rgba(241, 167, 200, 0.04);
+  --shadow-hover: 0 4px 20px rgba(241, 167, 200, 0.1), 0 1px 4px rgba(0, 0, 0, 0.03);
+  --shadow-hero: 0 8px 40px rgba(241, 167, 200, 0.08);
 }
 
 @theme inline {
@@ -36,6 +36,9 @@
 
 html {
   background: var(--bg);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html,
@@ -418,7 +421,8 @@ main {
 }
 
 .card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
 }
 
 @keyframes cardFadeIn {
@@ -1266,7 +1270,9 @@ button[type="submit"]:disabled {
 }
 
 .admin-card:hover {
-  opacity: 0.95;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--pink-200);
 }
 
 /* ─── Анимации ─────────────────────────────────────────────────── */
