@@ -269,8 +269,8 @@ function EditProductContent() {
                   <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   {index === 0 && <span style={{ position: "absolute", top: "6px", left: "6px", background: "#f1a7c8", color: "#fff", padding: "2px 6px", borderRadius: "6px", fontSize: "9px", fontWeight: 700 }}>главное</span>}
                   <div style={{ position: "absolute", top: "4px", right: "4px", display: "flex", gap: "3px" }}>
-                    {index !== 0 && <button type="button" onClick={() => setMainImage(index)} style={{ width: "22px", height: "22px", borderRadius: "6px", background: "rgba(255,255,255,0.9)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "9px", color: "#f1a7c8", fontWeight: 700 }}>★</button>}
-                    <button type="button" onClick={() => removeImage(index)} style={{ width: "22px", height: "22px", borderRadius: "6px", background: "rgba(239,68,68,0.9)", color: "#fff", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><X size={10} strokeWidth={3} /></button>
+                    {index !== 0 && <button type="button" onClick={() => setMainImage(index)} style={{ width: "24px", height: "24px", borderRadius: "50%", background: "rgba(255,255,255,0.95)", border: "1px solid #f1a7c8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", color: "#f1a7c8", fontWeight: 700, lineHeight: 1, padding: 0 }}>★</button>}
+                    <button type="button" onClick={() => removeImage(index)} className="img-remove-btn" style={{ width: "24px", height: "24px", borderRadius: "50%", background: "rgba(255,255,255,0.95)", color: "#f1a7c8", border: "1px solid #f1a7c8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, lineHeight: 1 }}><X size={12} strokeWidth={2.5} /></button>
                   </div>
                 </div>
               ))}
