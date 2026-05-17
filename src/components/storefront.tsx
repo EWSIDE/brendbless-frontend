@@ -140,9 +140,8 @@ function CartToast({
       onClick={onGoToCart}
       style={{
         position: "fixed",
-        top: "24px",
-        left: "50%",
-        transform: "translateX(-50%)",
+        bottom: "24px",
+        right: "24px",
         background: "#fff",
         border: "1px solid #fdf2f8",
         borderRadius: "40px",
@@ -151,7 +150,7 @@ function CartToast({
         alignItems: "center",
         gap: "10px",
         zIndex: 9999,
-        animation: "slideInDown 0.3s ease-out",
+        animation: "slideInUp 0.3s ease-out",
         cursor: "pointer",
         boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
       }}
@@ -443,13 +442,13 @@ export function Storefront() {
 
       {/* Toast animation */}
       <style jsx global>{`
-        @keyframes slideInDown {
+        @keyframes slideInUp {
           from {
-            transform: translateX(-50%) translateY(-20px);
+            transform: translateY(20px);
             opacity: 0;
           }
           to {
-            transform: translateX(-50%) translateY(0);
+            transform: translateY(0);
             opacity: 1;
           }
         }
