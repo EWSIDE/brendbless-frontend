@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { getCookie, setCookie, ACCESS_TOKEN_COOKIE } from "@/lib/cookies";
 import { ConfirmModal } from "@/components/ui/confirm-modal";
 import {
@@ -48,6 +49,7 @@ type Product = {
 };
 
 export default function AdminProductsPage() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -574,7 +576,7 @@ export default function AdminProductsPage() {
             </span>
           )}
           <button
-            onClick={() => openProductModal()}
+            onClick={() => router.push("/admin/products/edit")}
             className="admin-add-btn"
             style={{
               background: "#f1a7c8",
@@ -909,7 +911,7 @@ export default function AdminProductsPage() {
                     <Check size={14} color={p.isActive ? "#f1a7c8" : "#9ca3af"} strokeWidth={3} />
                   </button>
                   <button
-                    onClick={() => openProductModal(p)}
+                    onClick={() => router.push(`/admin/products/edit?id=${p.id}`)}
                     title="редактировать"
                     style={{
                       padding: "7px",
