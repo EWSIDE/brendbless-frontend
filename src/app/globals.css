@@ -1261,6 +1261,7 @@ button[type="submit"]:disabled {
 
 /* ─── Админ панель ─────────────────────────────────────────────── */
 .admin-card {
+  height: 100%;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 48px;
