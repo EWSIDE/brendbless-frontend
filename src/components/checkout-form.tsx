@@ -398,17 +398,7 @@ export function CheckoutForm() {
               <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
                 <h2 style={{ margin: 0, fontSize: "16px", fontWeight: 600, color: "#333" }}>доставка</h2>
                 {/* Логотип СДЭК */}
-                <span style={{
-                  background: "#00b140",
-                  color: "#fff",
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  padding: "3px 8px",
-                  borderRadius: "6px",
-                  letterSpacing: "0.05em",
-                }}>
-                  СДЭК
-                </span>
+                <img src="https://logo-teka.com/wp-content/uploads/2025/06/cdek-logo.svg" alt="СДЭК" style={{ height: "18px", objectFit: "contain" }} />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 <label className="field">
