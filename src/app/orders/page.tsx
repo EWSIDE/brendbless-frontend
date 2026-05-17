@@ -35,12 +35,13 @@ type Order = {
 
 // ─── Статусы ──────────────────────────────────────────────────────
 const STATUS_MAP: Record<string, { label: string; color: string; bg: string }> = {
-  PENDING:    { label: "ожидает",     color: "#92400e", bg: "#fef3c7" },
-  CONFIRMED:  { label: "подтверждён", color: "#1e40af", bg: "#dbeafe" },
-  PROCESSING: { label: "в обработке", color: "#6b21a8", bg: "#f3e8ff" },
-  SHIPPED:    { label: "отправлен",   color: "#065f46", bg: "#d1fae5" },
-  DELIVERED:  { label: "доставлен",   color: "#166534", bg: "#dcfce7" },
-  CANCELLED:  { label: "отменён",     color: "#991b1b", bg: "#fee2e2" },
+  PENDING:    { label: "не отправлен",    color: "#92400e", bg: "#fef3c7" },
+  PROCESSING: { label: "обработка",       color: "#6b21a8", bg: "#f3e8ff" },
+  SHIPPED:    { label: "отправлен",       color: "#1e40af", bg: "#dbeafe" },
+  IN_TRANSIT: { label: "в пути",          color: "#0369a1", bg: "#e0f2fe" },
+  READY:      { label: "готов к выдаче",  color: "#065f46", bg: "#d1fae5" },
+  DELIVERED:  { label: "доставлен",       color: "#166534", bg: "#dcfce7" },
+  CANCELLED:  { label: "отменён",         color: "#991b1b", bg: "#fee2e2" },
 };
 
 function getStatus(status: string) {

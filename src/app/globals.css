@@ -1274,8 +1274,6 @@ button[type="submit"]:disabled {
   box-shadow: var(--shadow-hover);
   border-color: var(--pink-200);
 }
-
-/* ─── Анимации ─────────────────────────────────────────────────── */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

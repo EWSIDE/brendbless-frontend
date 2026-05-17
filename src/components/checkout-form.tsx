@@ -87,6 +87,7 @@ export function CheckoutForm() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState<"form" | "payment" | "success">("form");
+  const [orderId, setOrderId] = useState<string | null>(null);
   const [orderNumber, setOrderNumber] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isAuth, setIsAuth] = useState(false);
@@ -161,6 +162,7 @@ export function CheckoutForm() {
         throw new Error(data.error || "не удалось создать заказ");
       }
 
+      setOrderId(data.data.id);
       setOrderNumber(data.data.orderNumber);
       setStep("payment");
     } catch (err: unknown) {
@@ -171,10 +173,28 @@ export function CheckoutForm() {
   const handlePaymentSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
-    setTimeout(() => {
-      removeCookie(CART_COOKIE);
-      setStep("success");
-    }, 1200);
+
+    // Redirect to YuKassa payment
+    try {
+      const token = getAccessToken();
+      const res = await fetch(`${API_BASE}/api/payments/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ orderId }),
+      });
+      const data = await res.json();
+      if (data.success && data.data?.paymentUrl) {
+        // Redirect to YuKassa payment page
+        window.location.href = data.data.paymentUrl;
+      } else {
+        setError(data.error || "не удалось создать платёж");
+      }
+    } catch {
+      setError("ошибка соединения с сервером");
+    }
   };
 
   // ─── Загрузка ───────────────────────────────────────────────────
