@@ -5,11 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "pages:build": "npx @cloudflare/next-on-pages@1",
-    "deploy": "npx wrangler pages deploy .vercel/output/static",
+    "deploy": "npx wrangler pages deploy out",
     "start": "next start",
     "lint": "eslint",
-    "preview": "npx wrangler pages dev .vercel/output/static"
+    "preview": "npx wrangler pages dev out"
   },
   "dependencies": {
     "lucide-react": "^1.16.0",
@@ -26,6 +25,7 @@
     "eslint-config-next": "16.2.6",
     "postcss": "^8.5.14",
     "tailwindcss": "^4.3.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^3.0.0"
   }
 }
