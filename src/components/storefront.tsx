@@ -136,102 +136,44 @@ function CartToast({
 }) {
   return (
     <div
+      onClick={onGoToCart}
       style={{
         position: "fixed",
-        bottom: "24px",
-        right: "24px",
+        top: "24px",
+        left: "50%",
+        transform: "translateX(-50%)",
         background: "#fff",
-        border: "none",
-        borderRadius: "20px",
-        padding: "16px 20px",
+        border: "1px solid #fdf2f8",
+        borderRadius: "40px",
+        padding: "12px 24px",
         display: "flex",
         alignItems: "center",
-        gap: "12px",
+        gap: "10px",
         zIndex: 9999,
-        animation: "slideInUp 0.3s ease-out",
-        maxWidth: "360px",
-        boxShadow: "none",
+        animation: "slideInDown 0.3s ease-out",
+        cursor: "pointer",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
       }}
     >
       <div
         style={{
-          width: "36px",
-          height: "36px",
+          width: "28px",
+          height: "28px",
           borderRadius: "50%",
           background: "#fce7f3",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
-          position: "relative",
         }}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f1a7c8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f1a7c8" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
           <path d="M20 6L9 17l-5-5" />
         </svg>
-        {count > 1 && (
-          <span style={{
-            position: "absolute",
-            top: "-6px",
-            right: "-6px",
-            background: "#f1a7c8",
-            color: "#fff",
-            fontSize: "10px",
-            fontWeight: 700,
-            width: "18px",
-            height: "18px",
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            lineHeight: 1,
-          }}>
-            {count}
-          </span>
-        )}
       </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: "#1a1a1a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {productName}
-        </p>
-        <p style={{ margin: "2px 0 0", fontSize: "12px", color: "#8e8e8e" }}>
-          {count > 1 ? `добавлено ${count} шт. в корзину` : "добавлено в корзину"}
-        </p>
-      </div>
-      <button
-        type="button"
-        onClick={onGoToCart}
-        style={{
-          background: "#f1a7c8",
-          color: "#fff",
-          border: "none",
-          borderRadius: "12px",
-          padding: "8px 16px",
-          fontSize: "13px",
-          fontWeight: 600,
-          cursor: "pointer",
-          whiteSpace: "nowrap",
-        }}
-      >
-        в корзину
-      </button>
-      <button
-        type="button"
-        onClick={onClose}
-        style={{
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          padding: "4px",
-          display: "flex",
-          alignItems: "center",
-          color: "#9ca3af",
-        }}
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M18 6L6 18M6 6l12 12" />
-        </svg>
-      </button>
+      <span style={{ fontSize: "14px", color: "#333", fontWeight: 400 }}>
+        товар добавлен в корзину
+      </span>
     </div>
   );
 }
@@ -500,13 +442,13 @@ export function Storefront() {
 
       {/* Toast animation */}
       <style jsx global>{`
-        @keyframes slideInUp {
+        @keyframes slideInDown {
           from {
-            transform: translateY(20px);
+            transform: translateX(-50%) translateY(-20px);
             opacity: 0;
           }
           to {
-            transform: translateY(0);
+            transform: translateX(-50%) translateY(0);
             opacity: 1;
           }
         }
