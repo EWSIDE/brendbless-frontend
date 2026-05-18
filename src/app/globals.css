@@ -1134,7 +1134,7 @@ button[disabled]::after {
 }
 
 button[type="submit"],
-button:not(.dropdown-trigger):not(.cabinet-btn):not(.logout-btn):not(.hero-nav-btn):not(.hero-icon-btn):not(.password-toggle-btn):not(.size-chip-btn):not(.add-to-cart-icon-btn):not(.img-remove-btn) {
+button:not(.dropdown-trigger):not(.cabinet-btn):not(.logout-btn):not(.hero-nav-btn):not(.hero-icon-btn):not(.password-toggle-btn):not(.size-chip-btn):not(.add-to-cart-icon-btn):not(.img-remove-btn):not(.pdp-size-btn):not(.pdp-thumb):not(.pdp-back):not(.pdp-accordion-trigger) {
   padding: 20px 40px;
   border: none;
   border-radius: 40px;
@@ -1773,9 +1773,9 @@ button[type="submit"]:disabled {
   border-radius: 50% !important;
   border: 2px solid #f1a7c8 !important;
   background: #fff !important;
-  color: #f1a7c8;
-  font-size: 13px;
-  font-weight: 600;
+  color: #e0609a !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
   cursor: pointer;
   display: flex;
   align-items: center;
