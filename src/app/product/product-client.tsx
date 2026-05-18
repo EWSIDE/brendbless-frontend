@@ -64,6 +64,7 @@ export default function ProductClient() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
+  const [toast, setToast] = useState(false);
   const [descOpen, setDescOpen] = useState(false);
   const [deliveryOpen, setDeliveryOpen] = useState(false);
 
@@ -114,7 +115,9 @@ export default function ProductClient() {
     if (!canAdd) return;
     addToCart(product.id, selectedSize ?? undefined);
     setAdded(true);
+    setToast(true);
     setTimeout(() => setAdded(false), 2000);
+    setTimeout(() => setToast(false), 3000);
   };
 
   return (
@@ -225,6 +228,7 @@ export default function ProductClient() {
               type="button"
               className="pdp-accordion-trigger"
               onClick={() => setDeliveryOpen(!deliveryOpen)}
+              style={{ color: "#1a1a1a" }}
             >
               <span>доставка</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: deliveryOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>
@@ -233,7 +237,7 @@ export default function ProductClient() {
             </button>
             {deliveryOpen && (
               <div className="pdp-accordion-content">
-                <p className="pdp-description">
+                <p className="pdp-description" style={{ color: "#999" }}>
                   доставка осуществляется сервисом доставки сдэк. отправка заказов производится в течение трёх дней с момента заказа (сроки отправки могут быть изменены, о чём сообщается в официальных социальных сетях продавца или на сайте).
                 </p>
               </div>
@@ -241,6 +245,63 @@ export default function ProductClient() {
           </div>
         </div>
       </div>
+
+      {/* Toast уведомление */}
+      {toast && (
+        <div
+          onClick={() => router.push("/cart")}
+          style={{
+            position: "fixed",
+            bottom: "24px",
+            right: "24px",
+            background: "#fff",
+            border: "1px solid #fdf2f8",
+            borderRadius: "40px",
+            padding: "12px 24px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            zIndex: 9999,
+            animation: "slideInUp 0.3s ease-out",
+            cursor: "pointer",
+            boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+          }}
+        >
+          <div
+            style={{
+              width: "28px",
+              height: "28px",
+              borderRadius: "50%",
+              background: "#fce7f3",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f1a7c8" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 6L9 17l-5-5" />
+            </svg>
+          </div>
+          <span style={{ fontSize: "14px", color: "#333", fontWeight: 400 }}>
+            товар добавлен в корзину
+          </span>
+        </div>
+      )}
+
+      {/* Toast animation */}
+      <style jsx global>{`
+        @keyframes slideInUp {
+          from {
+            transform: translateY(20px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 }

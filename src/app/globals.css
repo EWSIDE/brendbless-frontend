@@ -1771,9 +1771,9 @@ button[type="submit"]:disabled {
   width: 46px;
   height: 46px;
   border-radius: 50% !important;
-  border: 2px solid #f0e4ec !important;
+  border: 2px solid #f1a7c8 !important;
   background: #fff !important;
-  color: var(--text);
+  color: #f1a7c8;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
