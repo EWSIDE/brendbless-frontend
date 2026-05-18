@@ -1,4 +1,4 @@
-а"use client";
+"use client";
 
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
@@ -89,7 +89,7 @@ export function CheckoutForm() {
   const [orderNumber, setOrderNumber] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isAuth, setIsAuth] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "sbp">("card");
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "sbp">("sbp");
 
   useEffect(() => {
     setIsAuth(!!getAccessToken());
@@ -321,30 +321,6 @@ export function CheckoutForm() {
           <div className="checkout-section">
             <h2 className="checkout-section-title">3. способ оплаты</h2>
             <div className="checkout-payment-options">
-              {/* Карта */}
-              <label className={`checkout-payment-option ${paymentMethod === "card" ? "active" : ""}`}>
-                <input
-                  type="radio"
-                  name="payment"
-                  value="card"
-                  checked={paymentMethod === "card"}
-                  onChange={() => setPaymentMethod("card")}
-                  style={{ display: "none" }}
-                />
-                <CardLogo />
-                <div>
-                  <p className="checkout-payment-name">банковская карта</p>
-                  <p className="checkout-payment-desc">visa, mastercard, мир</p>
-                </div>
-                {paymentMethod === "card" && (
-                  <div className="checkout-payment-check">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
-                      <polyline points="1.5 5 4 7.5 8.5 2.5"/>
-                    </svg>
-                  </div>
-                )}
-              </label>
-
               {/* СБП */}
               <label className={`checkout-payment-option ${paymentMethod === "sbp" ? "active" : ""}`}>
                 <input
@@ -361,6 +337,30 @@ export function CheckoutForm() {
                   <p className="checkout-payment-desc">оплата через приложение банка</p>
                 </div>
                 {paymentMethod === "sbp" && (
+                  <div className="checkout-payment-check">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
+                      <polyline points="1.5 5 4 7.5 8.5 2.5"/>
+                    </svg>
+                  </div>
+                )}
+              </label>
+
+              {/* Карта */}
+              <label className={`checkout-payment-option ${paymentMethod === "card" ? "active" : ""}`}>
+                <input
+                  type="radio"
+                  name="payment"
+                  value="card"
+                  checked={paymentMethod === "card"}
+                  onChange={() => setPaymentMethod("card")}
+                  style={{ display: "none" }}
+                />
+                <CardLogo />
+                <div>
+                  <p className="checkout-payment-name">банковская карта</p>
+                  <p className="checkout-payment-desc">visa, mastercard, мир</p>
+                </div>
+                {paymentMethod === "card" && (
                   <div className="checkout-payment-check">
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
                       <polyline points="1.5 5 4 7.5 8.5 2.5"/>
