@@ -21,13 +21,12 @@ type Order = {
 };
 
 const STATUSES = [
-  { value: "PENDING", label: "не отправлен", color: "#92400e", bg: "#fef3c7" },
-  { value: "PROCESSING", label: "обработка", color: "#6b21a8", bg: "#f3e8ff" },
-  { value: "SHIPPED", label: "отправлен", color: "#1e40af", bg: "#dbeafe" },
-  { value: "IN_TRANSIT", label: "в пути", color: "#0369a1", bg: "#e0f2fe" },
-  { value: "READY", label: "готов к выдаче", color: "#065f46", bg: "#d1fae5" },
-  { value: "DELIVERED", label: "доставлен", color: "#166534", bg: "#dcfce7" },
+  { value: "PENDING", label: "принят", color: "#be185d", bg: "#fce7f3" },
+  { value: "PROCESSING", label: "собирается", color: "#be185d", bg: "#fce7f3" },
+  { value: "IN_TRANSIT", label: "в пути", color: "#92400e", bg: "#fef3c7" },
+  { value: "READY", label: "готов к выдаче", color: "#166534", bg: "#dcfce7" },
   { value: "CANCELLED", label: "отменён", color: "#991b1b", bg: "#fee2e2" },
+  { value: "DELAYED", label: "задерживается", color: "#991b1b", bg: "#fee2e2" },
 ];
 
 function getStatusInfo(status: string) {

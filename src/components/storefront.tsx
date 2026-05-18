@@ -209,7 +209,7 @@ function ProductCard({
       <Link href={`/product?id=${product.id}`} className="card-link">
         <div className="product-image-placeholder">
           {product.imageUrl ? (
-            <img src={product.imageUrl} alt={product.name} />
+            <img src={product.imageUrl} alt={product.name} loading="eager" decoding="async" fetchPriority="high" />
           ) : (
             <>
               <span className="placeholder-icon">📷</span>
