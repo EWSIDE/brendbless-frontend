@@ -5,7 +5,7 @@ import { getCookie, ACCESS_TOKEN_COOKIE } from "@/lib/cookies";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-type OrderItem = { id: string; productName: string; quantity: number; unitPrice: number; total: number; productImage?: string | null };
+type OrderItem = { id: string; productName: string; size?: string | null; quantity: number; unitPrice: number; total: number; productImage?: string | null };
 type Order = {
   id: string;
   orderNumber: string;
@@ -261,7 +261,7 @@ export default function AdminOrdersPage() {
                                 )}
                               </div>
                               <div style={{ flex: 1 }}>
-                                <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "#333" }}>{item.productName}</p>
+                                <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "#333" }}>{item.productName}{item.size ? ` (${item.size})` : ''}</p>
                                 <p style={{ margin: 0, fontSize: "12px", color: "#8e8e8e" }}>× {item.quantity} · {item.unitPrice} ₽</p>
                               </div>
                               <span style={{ fontSize: "13px", fontWeight: 700, color: "#333" }}>{item.total} ₽</span>

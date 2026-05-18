@@ -138,7 +138,7 @@ export function CheckoutForm() {
       return;
     }
 
-    const items = cartItems.map((c) => ({ productId: c.id, quantity: c.quantity }));
+    const items = cartItems.map((c) => ({ productId: c.id, quantity: c.quantity, size: c.size }));
 
     try {
       const res = await fetch(`${API_BASE}/api/orders`, {

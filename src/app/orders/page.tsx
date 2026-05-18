@@ -21,6 +21,7 @@ type OrderItem = {
   total: number;
   productName: string;
   productImage?: string | null;
+  size?: string | null;
 };
 
 type Order = {
@@ -352,7 +353,7 @@ export default function OrdersPage() {
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <p style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: "#333" }}>
-                                  {item.productName}
+                                  {item.productName}{item.size ? ` (${item.size})` : ''}
                                 </p>
                                 <p style={{ margin: "2px 0 0 0", fontSize: "12px", color: "#8e8e8e" }}>× {item.quantity}</p>
                               </div>
