@@ -191,15 +191,15 @@ export function CartView() {
     [enriched],
   );
 
-  const removeItem = (id: string) => {
-    const updated = items.filter((i) => i.id !== id);
+  const removeItem = (id: string, size?: string) => {
+    const updated = items.filter((i) => !(i.id === id && i.size === size));
     setItems(updated);
     writeCart(updated);
   };
 
-  const updateQuantity = (id: string, delta: number) => {
+  const updateQuantity = (id: string, size: string | undefined, delta: number) => {
     const updated = items.map((i) => {
-      if (i.id !== id) return i;
+      if (!(i.id === id && i.size === size)) return i;
       const newQty = Math.max(1, i.quantity + delta);
       return { ...i, quantity: newQty };
     });
@@ -304,7 +304,7 @@ export function CartView() {
             {/* Крестик удалить — в правом верхнем углу */}
             <button
               type="button"
-              onClick={() => removeItem(item.id)}
+              onClick={() => removeItem(item.id, item.size)}
               aria-label="удалить товар"
               style={{
                 position: "absolute",
@@ -381,7 +381,7 @@ export function CartView() {
                   }}>
                     <button
                       type="button"
-                      onClick={() => updateQuantity(item.id, -1)}
+                      onClick={() => updateQuantity(item.id, item.size, -1)}
                       style={{
                         width: "36px",
                         height: "36px",
@@ -413,7 +413,7 @@ export function CartView() {
                     </span>
                     <button
                       type="button"
-                      onClick={() => updateQuantity(item.id, 1)}
+                      onClick={() => updateQuantity(item.id, item.size, 1)}
                       style={{
                         width: "36px",
                         height: "36px",
