@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import { type Product } from "@/data/products";
 import { CART_COOKIE, getCookie, setCookie } from "@/lib/cookies";
+import { useSettings } from "@/lib/settings-context";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -87,6 +88,7 @@ function writeCart(items: CartItem[]) {
 
 export function CartView() {
   const router = useRouter();
+  const settings = useSettings();
   const [items, setItems] = useState<CartItem[]>([]);
   const [enriched, setEnriched] = useState<EnrichedItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -464,11 +466,52 @@ export function CartView() {
           padding: "24px",
           display: "flex",
           flexDirection: "column",
-          gap: "16px",
+          gap: "12px",
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <p style={{ margin: 0, fontSize: "14px", color: "#8e8e8e" }}>товары</p>
+            <span style={{ fontSize: "15px", color: "#333", fontWeight: 500 }}>{total.toLocaleString("ru-RU")} ₽</span>
+          </div>
+          {(() => {
+            const shippingCost = settings?.shippingCost ?? 50;
+            const freeThreshold = settings?.freeShippingThreshold ?? 5000;
+            const isFree = total >= freeThreshold || shippingCost === 0;
+            return (
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <p style={{ margin: 0, fontSize: "14px", color: "#8e8e8e" }}>доставка</p>
+                {isFree ? (
+                  <span style={{ fontSize: "14px", color: "#166534", fontWeight: 500 }}>бесплатно</span>
+                ) : (
+                  <span style={{ fontSize: "14px", color: "#333", fontWeight: 500 }}>{shippingCost.toLocaleString("ru-RU")} ₽</span>
+                )}
+              </div>
+            );
+          })()}
+          {(() => {
+            const shippingCost = settings?.shippingCost ?? 50;
+            const freeThreshold = settings?.freeShippingThreshold ?? 5000;
+            const isFree = total >= freeThreshold || shippingCost === 0;
+            const remaining = freeThreshold - total;
+            if (!isFree && remaining > 0 && freeThreshold > 0) {
+              return (
+                <p style={{ margin: 0, fontSize: "12px", color: "#f1a7c8" }}>
+                  ещё {remaining.toLocaleString("ru-RU")} ₽ до бесплатной доставки
+                </p>
+              );
+            }
+            return null;
+          })()}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "8px", borderTop: "1px solid rgba(241,167,200,0.2)" }}>
             <p style={{ margin: 0, fontSize: "15px", color: "#8e8e8e" }}>итого</p>
-            <strong style={{ fontSize: "22px", color: "#333", fontWeight: 700 }}>{total.toLocaleString("ru-RU")} ₽</strong>
+            <strong style={{ fontSize: "22px", color: "#333", fontWeight: 700 }}>
+              {(() => {
+                const shippingCost = settings?.shippingCost ?? 50;
+                const freeThreshold = settings?.freeShippingThreshold ?? 5000;
+                const isFree = total >= freeThreshold || shippingCost === 0;
+                const finalTotal = total + (isFree ? 0 : shippingCost);
+                return finalTotal.toLocaleString("ru-RU");
+              })()} ₽
+            </strong>
           </div>
           <Link
             href="/checkout"

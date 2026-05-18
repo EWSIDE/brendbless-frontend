@@ -9,6 +9,8 @@ export type SiteSettings = {
   telegramChannel: string;
   frontendUrl: string;
   yukassaConfigured: boolean;
+  shippingCost: number;
+  freeShippingThreshold: number;
 };
 
 const defaultSettings: SiteSettings = {
@@ -18,6 +20,8 @@ const defaultSettings: SiteSettings = {
   telegramChannel: "https://t.me/brandbless",
   frontendUrl: "https://brandbless.ru",
   yukassaConfigured: false,
+  shippingCost: 50,
+  freeShippingThreshold: 5000,
 };
 
 const SettingsContext = createContext<SiteSettings>(defaultSettings);
