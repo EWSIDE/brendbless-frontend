@@ -568,6 +568,8 @@ button[disabled]::after {
 
 .product-grid {
   display: grid;
+  max-width: 85%;
+  margin: 0 auto;
   grid-template-columns: repeat(4, 1fr);
   gap: 28px 20px;
 }

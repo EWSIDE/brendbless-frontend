@@ -487,20 +487,6 @@ export function CartView() {
               </div>
             );
           })()}
-          {(() => {
-            const shippingCost = settings?.shippingCost ?? 50;
-            const freeThreshold = settings?.freeShippingThreshold ?? 5000;
-            const isFree = total >= freeThreshold || shippingCost === 0;
-            const remaining = freeThreshold - total;
-            if (!isFree && remaining > 0 && freeThreshold > 0) {
-              return (
-                <p style={{ margin: 0, fontSize: "12px", color: "#f1a7c8" }}>
-                  ещё {remaining.toLocaleString("ru-RU")} ₽ до бесплатной доставки
-                </p>
-              );
-            }
-            return null;
-          })()}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "8px", borderTop: "1px solid rgba(241,167,200,0.2)" }}>
             <p style={{ margin: 0, fontSize: "15px", color: "#8e8e8e" }}>итого</p>
             <strong style={{ fontSize: "22px", color: "#333", fontWeight: 700 }}>
