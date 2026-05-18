@@ -183,7 +183,7 @@ export default function ProductClient() {
                   aria-label="предыдущее фото"
                   className={`${styles.navBtn} ${styles.navBtnLeft}`}
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f1a7c8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M15 18l-6-6 6-6" />
                   </svg>
                 </button>
@@ -193,7 +193,7 @@ export default function ProductClient() {
                   aria-label="следующее фото"
                   className={`${styles.navBtn} ${styles.navBtnRight}`}
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f1a7c8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 18l6-6-6-6" />
                   </svg>
                 </button>

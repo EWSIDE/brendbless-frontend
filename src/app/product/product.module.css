@@ -61,22 +61,24 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
-  border: none;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 0 !important;
+  background: none !important;
+  border: none !important;
   cursor: pointer;
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  padding: 0;
-  transition: box-shadow 0.2s, transform 0.15s;
+  box-shadow: none !important;
+  padding: 0 !important;
+  transition: opacity 0.2s;
+  color: #f1a7c8 !important;
 }
 .navBtn:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  transform: translateY(-50%) scale(1.05);
+  opacity: 0.7;
+  box-shadow: none !important;
+  transform: translateY(-50%);
 }
 .navBtnLeft {
   left: 16px;
@@ -118,7 +120,7 @@
 .title {
   font-size: 32px;
   font-weight: 600;
-  font-style: italic;
+  font-style: normal;
   color: #1a1a1a;
   margin: 0;
   line-height: 1.15;
@@ -163,82 +165,86 @@
 }
 
 .sizeBtn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1.5px solid #ddd;
-  background: #fff;
-  color: #1a1a1a;
-  font-size: 13px;
-  font-weight: 500;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid #f1a7c8 !important;
+  background: transparent !important;
+  color: #f1a7c8 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
   cursor: pointer;
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: 0 !important;
   font-family: inherit;
   transition: all 0.15s ease;
 }
 .sizeBtn:hover {
-  border-color: #1a1a1a;
+  background: rgba(241, 167, 200, 0.1) !important;
 }
 .sizeBtnActive {
-  border-color: #1a1a1a;
-  background: #1a1a1a;
-  color: #fff;
+  border-color: #f1a7c8 !important;
+  background: #f1a7c8 !important;
+  color: #fff !important;
 }
 
 /* Кнопка добавить */
 .addBtn {
-  display: block;
-  width: 100%;
-  padding: 20px 32px;
-  border-radius: 60px;
-  border: none;
-  background: #2d6b4f;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 600;
+  display: block !important;
+  width: 100% !important;
+  padding: 20px 32px !important;
+  border-radius: 60px !important;
+  border: none !important;
+  background: #2d6b4f !important;
+  color: #fff !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s ease;
   text-align: center;
   text-decoration: none;
   letter-spacing: 0.3px;
+  box-shadow: none !important;
 }
 .addBtn:hover {
-  background: #245a42;
+  background: #245a42 !important;
 }
 .addBtn:disabled {
-  opacity: 0.35;
+  opacity: 0.35 !important;
   cursor: not-allowed;
 }
 .addBtnAdded {
-  background: #1a1a1a;
+  background: #1a1a1a !important;
 }
 
 /* Аккордеон */
 .accordion {
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid #e5e5e5 !important;
+  background: none !important;
 }
 
 .accordionBtn {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 0;
-  background: none;
-  border: none;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 20px 0 !important;
+  background: none !important;
+  border: none !important;
+  border-radius: 0 !important;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  color: #1a1a1a;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  color: #1a1a1a !important;
   font-family: inherit;
   transition: color 0.2s;
+  box-shadow: none !important;
 }
 .accordionBtn:hover {
-  color: #555;
+  color: #555 !important;
 }
 
 .accordionContent {
