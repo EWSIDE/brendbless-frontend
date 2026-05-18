@@ -302,7 +302,7 @@ export function CheckoutForm() {
           {/* 2. Адрес доставки */}
           <div className="checkout-section">
             <h2 className="checkout-section-title">2. адрес доставки</h2>
-            <p className="checkout-hint">доставка осуществляется через сдэк в города России, Казахстана и Беларуси</p>
+            <p className="checkout-hint">доставка осуществляется через сдэк по всей России</p>
             <label className="field">
               <span>город</span>
               <input name="city" type="text" placeholder="москва" required />

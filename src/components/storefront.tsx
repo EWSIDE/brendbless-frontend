@@ -206,23 +206,28 @@ function ProductCard({
 
   return (
     <article className="card">
-      <div className="product-image-placeholder">
-        {product.imageUrl ? (
-          <img src={product.imageUrl} alt={product.name} />
-        ) : (
-          <>
-            <span className="placeholder-icon">📷</span>
-            <span className="placeholder-text">фото товара</span>
-          </>
+      <Link href={`/product?id=${product.id}`} className="card-link">
+        <div className="product-image-placeholder">
+          {product.imageUrl ? (
+            <img src={product.imageUrl} alt={product.name} />
+          ) : (
+            <>
+              <span className="placeholder-icon">📷</span>
+              <span className="placeholder-text">фото товара</span>
+            </>
+          )}
+        </div>
+
+        {hasDiscount && (
+          <span className="discount-badge">-{discountPct}%</span>
         )}
-      </div>
 
-      {hasDiscount && (
-        <span className="discount-badge">-{discountPct}%</span>
-      )}
+        <div className="card-content">
+          <h3 className="product-name">{product.name}</h3>
+        </div>
+      </Link>
 
-      <div className="card-content">
-        <h3 className="product-name">{product.name}</h3>
+      <div className="card-content" style={{ paddingTop: 0 }}>
 
         <div className="card-price-row">
           <div className="price-block">
