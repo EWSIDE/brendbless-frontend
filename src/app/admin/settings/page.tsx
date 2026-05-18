@@ -14,6 +14,8 @@ type Settings = {
   telegramManager: string;
   telegramChannel: string;
   yukassaConfigured?: boolean;
+  shippingCost: number;
+  freeShippingThreshold: number;
 };
 
 export default function AdminSettingsPage() {
@@ -26,6 +28,8 @@ export default function AdminSettingsPage() {
     supportEmail: "",
     telegramManager: "",
     telegramChannel: "",
+    shippingCost: 50,
+    freeShippingThreshold: 5000,
   });
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -271,6 +275,55 @@ export default function AdminSettingsPage() {
             }} />
             <span style={{ color: "#6b7280" }}>
               {settings.yukassaConfigured ? "юkassa подключена" : "юkassa не настроена"}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Доставка */}
+      <div style={sectionStyle}>
+        <h2 style={{ fontSize: "18px", fontWeight: 600, marginTop: 0, marginBottom: "8px", color: "#333", display: "flex", alignItems: "center", gap: "10px" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          доставка
+        </h2>
+        <p style={{ fontSize: "13px", color: "#9ca3af", margin: "0 0 20px" }}>
+          стоимость доставки прибавляется к заказу. при 0 ₽ — доставка всегда бесплатная.
+        </p>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div>
+            <label style={labelStyle}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              стоимость доставки (₽)
+            </label>
+            <input
+              style={inputStyle}
+              type="number"
+              min="0"
+              value={settings.shippingCost}
+              onChange={(e) => setSettings((s) => ({ ...s, shippingCost: Number(e.target.value) || 0 }))}
+              placeholder="50"
+            />
+            <span style={{ fontSize: "12px", color: "#9ca3af", marginTop: "4px", display: "block" }}>
+              поставьте 0 для бесплатной доставки всегда
+            </span>
+          </div>
+
+          <div>
+            <label style={labelStyle}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              бесплатная доставка от (₽)
+            </label>
+            <input
+              style={inputStyle}
+              type="number"
+              min="0"
+              value={settings.freeShippingThreshold}
+              onChange={(e) => setSettings((s) => ({ ...s, freeShippingThreshold: Number(e.target.value) || 0 }))}
+              placeholder="5000"
+            />
+            <span style={{ fontSize: "12px", color: "#9ca3af", marginTop: "4px", display: "block" }}>
+              при сумме заказа от этой суммы доставка бесплатная. 0 = порог не используется.
             </span>
           </div>
         </div>
