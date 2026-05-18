@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CookieBanner } from "@/components/cookie-banner";
+import { SessionGuard } from "@/components/session-guard";
 import { SettingsProvider } from "@/lib/settings-context";
 
 const inter = Inter({
@@ -33,6 +34,7 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-white">
         <SettingsProvider>
+          <SessionGuard />
           <SiteHeader />
           <main className="container page-content">{children}</main>
           <SiteFooter />
