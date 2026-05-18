@@ -1,0 +1,340 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.loader {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #eee;
+  border-top-color: #1a1a1a;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 80px auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Кнопка назад */
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0;
+  margin-bottom: 24px;
+  color: #1a1a1a;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+.backBtn:hover {
+  opacity: 0.6;
+}
+
+/* Сетка */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
+
+/* Галерея */
+.gallery {
+  position: relative;
+}
+
+.mainImage {
+  width: 100%;
+  aspect-ratio: 3/4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f8f8f8;
+  position: relative;
+}
+
+.productImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.noImage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f8f8;
+}
+
+/* Навигация фото */
+.navBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 0;
+  transition: box-shadow 0.2s;
+}
+.navBtn:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+.navBtnLeft {
+  left: 12px;
+}
+.navBtnRight {
+  right: 12px;
+}
+
+/* Точки */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: #ddd;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+.dotActive {
+  width: 24px;
+  background: #1a1a1a;
+}
+
+/* Информация */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.oldPrice {
+  font-size: 16px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* Размеры */
+.sizesBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sizesLabel {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sizesList {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sizeBtn {
+  min-width: 44px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1.5px solid #e0e0e0;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+.sizeBtn:hover {
+  border-color: #1a1a1a;
+}
+.sizeBtnActive {
+  border-color: #1a1a1a;
+  background: #1a1a1a;
+  color: #fff;
+}
+
+/* Кнопка добавить */
+.addBtn {
+  display: block;
+  width: 100%;
+  padding: 18px 32px;
+  border-radius: 12px;
+  border: none;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  text-align: center;
+  text-decoration: none;
+  letter-spacing: 0.2px;
+}
+.addBtn:hover {
+  background: #333;
+}
+.addBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.addBtnAdded {
+  background: #16a34a;
+}
+
+/* Аккордеон */
+.accordion {
+  border-top: 1px solid #eee;
+}
+
+.accordionBtn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a1a1a;
+  font-family: inherit;
+  transition: color 0.2s;
+}
+.accordionBtn:hover {
+  color: #666;
+}
+
+.accordionContent {
+  padding: 0 0 18px;
+}
+.accordionContent p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #444;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 16px 100px;
+  }
+
+  .backBtn {
+    margin-bottom: 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .mainImage {
+    border-radius: 10px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .price {
+    font-size: 20px;
+  }
+
+  .addBtn {
+    padding: 16px 24px;
+    font-size: 14px;
+    position: sticky;
+    bottom: 16px;
+    z-index: 10;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+  }
+
+  .sizeBtn {
+    min-width: 40px;
+    height: 40px;
+    font-size: 13px;
+  }
+
+  .navBtn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .info {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 12px 12px 100px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .price {
+    font-size: 18px;
+  }
+}
