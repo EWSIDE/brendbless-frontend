@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CookieBanner } from "@/components/cookie-banner";
+import { SettingsProvider } from "@/lib/settings-context";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -31,10 +32,12 @@ export default function RootLayout({
       className={`${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-white">
-        <SiteHeader />
-        <main className="container page-content">{children}</main>
-        <SiteFooter />
-        <CookieBanner />
+        <SettingsProvider>
+          <SiteHeader />
+          <main className="container page-content">{children}</main>
+          <SiteFooter />
+          <CookieBanner />
+        </SettingsProvider>
       </body>
     </html>
   );

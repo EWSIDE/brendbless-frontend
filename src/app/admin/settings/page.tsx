@@ -12,6 +12,7 @@ type Settings = {
   shopName: string;
   supportEmail: string;
   telegramManager: string;
+  telegramChannel: string;
   yukassaConfigured?: boolean;
 };
 
@@ -24,6 +25,7 @@ export default function AdminSettingsPage() {
     shopName: "",
     supportEmail: "",
     telegramManager: "",
+    telegramChannel: "",
   });
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -47,7 +49,7 @@ export default function AdminSettingsPage() {
       if (data.success && data.data) {
         setSettings({
           ...data.data,
-          yukassaSecretKey: "", // Don't load actual key, show masked
+          yukassaSecretKey: "",
         });
       }
     } catch (e) {
@@ -59,7 +61,6 @@ export default function AdminSettingsPage() {
     setLoading(true);
     const token = getToken();
 
-    // Only send yukassaSecretKey if user typed a new one
     const payload: any = { ...settings };
     if (!payload.yukassaSecretKey) {
       delete payload.yukassaSecretKey;
@@ -79,7 +80,6 @@ export default function AdminSettingsPage() {
 
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
-      // Reload to get masked key
       loadSettings();
     } catch (e) {
       console.error(e);
@@ -105,7 +105,9 @@ export default function AdminSettingsPage() {
     fontWeight: 500,
     color: "#5f5160",
     marginBottom: "6px",
-    display: "block",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
   };
 
   const sectionStyle: React.CSSProperties = {
@@ -116,6 +118,8 @@ export default function AdminSettingsPage() {
     marginBottom: "24px",
   };
 
+  const iconColor = "#f1a7c8";
+
   return (
     <div style={{ padding: "24px", maxWidth: "700px", margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
@@ -125,13 +129,17 @@ export default function AdminSettingsPage() {
 
       {/* Магазин */}
       <div style={sectionStyle}>
-        <h2 style={{ fontSize: "18px", fontWeight: 600, marginTop: 0, marginBottom: "20px", color: "#333" }}>
-          🏪 магазин
+        <h2 style={{ fontSize: "18px", fontWeight: 600, marginTop: 0, marginBottom: "20px", color: "#333", display: "flex", alignItems: "center", gap: "10px" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          магазин
         </h2>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div>
-            <label style={labelStyle}>название магазина</label>
+            <label style={labelStyle}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 3H8l-2 4h12l-2-4z"/></svg>
+              название магазина
+            </label>
             <input
               style={inputStyle}
               value={settings.shopName}
@@ -141,7 +149,10 @@ export default function AdminSettingsPage() {
           </div>
 
           <div>
-            <label style={labelStyle}>email поддержки</label>
+            <label style={labelStyle}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              email поддержки
+            </label>
             <input
               style={inputStyle}
               value={settings.supportEmail}
@@ -151,7 +162,10 @@ export default function AdminSettingsPage() {
           </div>
 
           <div>
-            <label style={labelStyle}>telegram менеджера</label>
+            <label style={labelStyle}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              telegram менеджера
+            </label>
             <input
               style={inputStyle}
               value={settings.telegramManager}
@@ -161,7 +175,23 @@ export default function AdminSettingsPage() {
           </div>
 
           <div>
-            <label style={labelStyle}>url фронтенда</label>
+            <label style={labelStyle}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              telegram канал
+            </label>
+            <input
+              style={inputStyle}
+              value={settings.telegramChannel}
+              onChange={(e) => setSettings((s) => ({ ...s, telegramChannel: e.target.value }))}
+              placeholder="https://t.me/brandbless"
+            />
+          </div>
+
+          <div>
+            <label style={labelStyle}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              url фронтенда
+            </label>
             <input
               style={inputStyle}
               value={settings.frontendUrl}
@@ -174,8 +204,9 @@ export default function AdminSettingsPage() {
 
       {/* ЮKassa */}
       <div style={sectionStyle}>
-        <h2 style={{ fontSize: "18px", fontWeight: 600, marginTop: 0, marginBottom: "8px", color: "#333" }}>
-          💳 юkassa
+        <h2 style={{ fontSize: "18px", fontWeight: 600, marginTop: 0, marginBottom: "8px", color: "#333", display: "flex", alignItems: "center", gap: "10px" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          юkassa
         </h2>
         <p style={{ fontSize: "13px", color: "#9ca3af", margin: "0 0 20px" }}>
           настройки платёжного шлюза для приёма оплаты
@@ -183,7 +214,10 @@ export default function AdminSettingsPage() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div>
-            <label style={labelStyle}>id магазина (shopId)</label>
+            <label style={labelStyle}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              id магазина (shopId)
+            </label>
             <input
               style={inputStyle}
               value={settings.yukassaShopId}
@@ -193,7 +227,10 @@ export default function AdminSettingsPage() {
           </div>
 
           <div>
-            <label style={labelStyle}>секретный ключ</label>
+            <label style={labelStyle}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              секретный ключ
+            </label>
             <div style={{ position: "relative" }}>
               <input
                 style={inputStyle}
@@ -205,8 +242,16 @@ export default function AdminSettingsPage() {
               <button
                 type="button"
                 onClick={() => setShowSecret(!showSecret)}
-                className="password-toggle-btn"
-                style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)" }}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                }}
               >
                 {showSecret ? "🙈" : "👁"}
               </button>
@@ -233,8 +278,9 @@ export default function AdminSettingsPage() {
 
       {/* Авторизация */}
       <div style={sectionStyle}>
-        <h2 style={{ fontSize: "18px", fontWeight: 600, marginTop: 0, marginBottom: "20px", color: "#333" }}>
-          🔐 авторизация
+        <h2 style={{ fontSize: "18px", fontWeight: 600, marginTop: 0, marginBottom: "20px", color: "#333", display: "flex", alignItems: "center", gap: "10px" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          авторизация
         </h2>
 
         <div style={{
@@ -244,7 +290,10 @@ export default function AdminSettingsPage() {
           padding: "16px 0",
         }}>
           <div>
-            <div style={{ fontWeight: 500, marginBottom: "4px" }}>подтверждение email</div>
+            <div style={{ fontWeight: 500, marginBottom: "4px", display: "flex", alignItems: "center", gap: "8px" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              подтверждение email
+            </div>
             <div style={{ fontSize: "13px", color: "#9ca3af" }}>требуется код при регистрации</div>
           </div>
           <button
@@ -300,6 +349,7 @@ export default function AdminSettingsPage() {
           fontSize: "16px",
           fontWeight: 500,
           cursor: "pointer",
+          transition: "background 0.2s",
         }}
       >
         {loading ? "сохранение..." : saved ? "✓ сохранено" : "сохранить настройки"}

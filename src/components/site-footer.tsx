@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useSettings } from "@/lib/settings-context";
 
 export function SiteFooter() {
+  const settings = useSettings();
+
   return (
     <footer className="site-footer">
       <div className="container footer-row">
@@ -22,10 +27,10 @@ export function SiteFooter() {
         <div className="footer-section">
           <h4 style={{ color: "#000" }}>контакты</h4>
           <p className="muted" style={{ fontSize: "14px" }}>
-            <a href="mailto:support@brandbless.ru" style={{ color: "#f1a7c8" }}>support@brandbless.ru</a>
+            <a href={`mailto:${settings.supportEmail}`} style={{ color: "#f1a7c8" }}>{settings.supportEmail}</a>
           </p>
           <p className="muted" style={{ fontSize: "14px", marginTop: "8px" }}>
-            <a href="https://t.me/brandbless" target="_blank" rel="noopener noreferrer" style={{ color: "#f1a7c8" }}>
+            <a href={settings.telegramChannel} target="_blank" rel="noopener noreferrer" style={{ color: "#f1a7c8" }}>
               telegram канал
             </a>
           </p>

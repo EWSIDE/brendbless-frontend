@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { CART_COOKIE, USER_COOKIE, LAST_USER_COOKIE, ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, getCookie, removeCookie } from "@/lib/cookies";
+import { useSettings } from "@/lib/settings-context";
 
 type CartItem = {
   id: number;
@@ -93,6 +94,7 @@ function BagIcon() {
 
 export function SiteHeader() {
   const router = useRouter();
+  const settings = useSettings();
   const [cartCount, setCartCount] = useState(0);
   const [user, setUser] = useState<User>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -151,7 +153,7 @@ export function SiteHeader() {
       <div className="container header-row">
         {/* Manager chat link */}
         <a
-          href="https://t.me/bless_mng"
+          href={settings.telegramManager}
           target="_blank"
           rel="noopener noreferrer"
           className="manager-link"

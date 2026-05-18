@@ -1,11 +1,10 @@
-﻿import type { Metadata } from "next";
+﻿"use client";
 
-export const metadata: Metadata = {
-  title: "контакты и реквизиты — bless",
-  description: "контактная информация и реквизиты bless",
-};
+import { useSettings } from "@/lib/settings-context";
 
 export default function ContactsPage() {
+  const settings = useSettings();
+
   return (
     <section className="stack">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
@@ -19,7 +18,19 @@ export default function ContactsPage() {
         <ul style={{ lineHeight: 2, fontSize: "16px", color: "#333" }}>
           <li>
             <strong>email:</strong>{" "}
-            <a href="mailto:support@brandbless.ru" style={{ color: "#f1a7c8" }}>support@brandbless.ru</a>
+            <a href={`mailto:${settings.supportEmail}`} style={{ color: "#f1a7c8" }}>{settings.supportEmail}</a>
+          </li>
+          <li>
+            <strong>telegram канал:</strong>{" "}
+            <a href={settings.telegramChannel} target="_blank" rel="noopener noreferrer" style={{ color: "#f1a7c8" }}>
+              {settings.telegramChannel}
+            </a>
+          </li>
+          <li>
+            <strong>менеджер:</strong>{" "}
+            <a href={settings.telegramManager} target="_blank" rel="noopener noreferrer" style={{ color: "#f1a7c8" }}>
+              написать менеджеру
+            </a>
           </li>
         </ul>
       </div>
