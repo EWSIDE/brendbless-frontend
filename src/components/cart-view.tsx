@@ -250,7 +250,7 @@ export function CartView() {
   }
 
   return (
-    <section className="stack" style={{ maxWidth: "600px", margin: "0 auto" }}>
+    <section className="stack" style={{ maxWidth: "1100px", margin: "0 auto" }}>
       {/* Заголовок */}
       <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
         <button
@@ -291,7 +291,9 @@ export function CartView() {
         </div>
       )}
 
-      <div className="stack">
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: "24px", alignItems: "start" }} className="cart-desktop-grid">
+        {/* Левая колонка — товары */}
+        <div className="stack">
         {enriched.map((item, idx) => (
           <article
             key={`${item.id}-${idx}`}
@@ -459,7 +461,9 @@ export function CartView() {
           </article>
         ))}
 
-        {/* Итог */}
+        </div>
+
+        {/* Правая колонка — итог */}
         <div style={{
           background: "linear-gradient(180deg, #fff5f8 0%, #fce7f3 100%)",
           borderRadius: "20px",
@@ -467,6 +471,8 @@ export function CartView() {
           display: "flex",
           flexDirection: "column",
           gap: "12px",
+          position: "sticky",
+          top: "24px",
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <p style={{ margin: 0, fontSize: "14px", color: "#8e8e8e" }}>товары</p>
@@ -517,6 +523,14 @@ export function CartView() {
           </Link>
         </div>
       </div>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .cart-desktop-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

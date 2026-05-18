@@ -437,6 +437,14 @@ function OrderSummary({
           );
         })}
       </div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "14px", color: "#8e8e8e" }}>
+        <span>товары</span>
+        <span style={{ color: "#333", fontWeight: 500 }}>{total.toLocaleString("ru-RU")} ₽</span>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "14px", color: "#8e8e8e" }}>
+        <span>доставка</span>
+        <span style={{ color: "#333", fontWeight: 500 }}>рассчитывается при оплате</span>
+      </div>
       <div className="checkout-summary-total">
         <span>итого</span>
         <strong>{total.toLocaleString("ru-RU")} ₽</strong>
