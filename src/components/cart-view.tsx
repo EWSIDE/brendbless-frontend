@@ -478,31 +478,14 @@ export function CartView() {
             <p style={{ margin: 0, fontSize: "14px", color: "#8e8e8e" }}>товары</p>
             <span style={{ fontSize: "15px", color: "#333", fontWeight: 500 }}>{total.toLocaleString("ru-RU")} ₽</span>
           </div>
-          {(() => {
-            const shippingCost = settings?.shippingCost ?? 50;
-            const freeThreshold = settings?.freeShippingThreshold ?? 5000;
-            const isFree = total >= freeThreshold || shippingCost === 0;
-            return (
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <p style={{ margin: 0, fontSize: "14px", color: "#8e8e8e" }}>доставка</p>
-                {isFree ? (
-                  <span style={{ fontSize: "14px", color: "#166534", fontWeight: 500 }}>бесплатно</span>
-                ) : (
-                  <span style={{ fontSize: "14px", color: "#333", fontWeight: 500 }}>{shippingCost.toLocaleString("ru-RU")} ₽</span>
-                )}
-              </div>
-            );
-          })()}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <p style={{ margin: 0, fontSize: "14px", color: "#8e8e8e" }}>доставка</p>
+            <span style={{ fontSize: "14px", color: "#333", fontWeight: 500 }}>рассчитывается при оплате</span>
+          </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "8px", borderTop: "1px solid rgba(241,167,200,0.2)" }}>
             <p style={{ margin: 0, fontSize: "15px", color: "#8e8e8e" }}>итого</p>
             <strong style={{ fontSize: "22px", color: "#333", fontWeight: 700 }}>
-              {(() => {
-                const shippingCost = settings?.shippingCost ?? 50;
-                const freeThreshold = settings?.freeShippingThreshold ?? 5000;
-                const isFree = total >= freeThreshold || shippingCost === 0;
-                const finalTotal = total + (isFree ? 0 : shippingCost);
-                return finalTotal.toLocaleString("ru-RU");
-              })()} ₽
+              {total.toLocaleString("ru-RU")} ₽
             </strong>
           </div>
           <Link
