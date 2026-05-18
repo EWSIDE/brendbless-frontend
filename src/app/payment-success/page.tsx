@@ -71,13 +71,12 @@ function PaymentSuccessContent() {
           width: "96px",
           height: "96px",
           borderRadius: "50%",
-          background: "linear-gradient(135deg, #fce7f3 0%, #f9a8d4 50%, #f472b6 100%)",
+          background: "#f1a7c8",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           margin: "0 auto 28px",
           animation: "scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          boxShadow: "0 8px 32px rgba(241, 167, 200, 0.3)",
         }}>
           <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12"/>
@@ -115,19 +114,20 @@ function PaymentSuccessContent() {
         </div>
 
         {/* Actions */}
-        <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "320px", margin: "0 auto" }}>
           <Link
             href="/orders"
             style={{
               background: "#f1a7c8",
               color: "#fff",
               borderRadius: "40px",
-              padding: "14px 28px",
+              padding: "16px 32px",
               fontWeight: 500,
               fontSize: "15px",
               textDecoration: "none",
-              display: "inline-flex",
+              display: "flex",
               alignItems: "center",
+              justifyContent: "center",
               gap: "8px",
             }}
           >
@@ -140,14 +140,15 @@ function PaymentSuccessContent() {
           <Link
             href="/"
             style={{
-              background: "transparent",
-              color: "#f1a7c8",
+              background: "#fff",
+              color: "#5d4c5a",
               border: "1px solid #fce7f3",
               borderRadius: "40px",
-              padding: "14px 28px",
+              padding: "16px 32px",
               fontWeight: 500,
               fontSize: "15px",
               textDecoration: "none",
+              textAlign: "center",
             }}
           >
             в каталог
