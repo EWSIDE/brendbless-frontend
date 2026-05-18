@@ -64,7 +64,7 @@ export default function AdminOrdersPage() {
   async function updateStatus(orderId: string, newStatus: string) {
     setUpdatingId(orderId);
     try {
-      const res = await fetch(`${API_BASE}/api/orders/admin/${orderId}/status`, {
+      const res = await fetch(`${API_BASE}/api/orders/${orderId}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

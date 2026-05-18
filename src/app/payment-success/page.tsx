@@ -22,7 +22,11 @@ function PaymentSuccessContent() {
     // Очищаем корзину
     removeCookie(CART_COOKIE);
 
+    let attempts = 0;
+    const maxAttempts = 30;
+
     const checkStatus = async () => {
+      attempts++;
       try {
         const token = getCookie(ACCESS_TOKEN_COOKIE);
         const res = await fetch(`${API_BASE}/api/payments/status/${orderId}`, {
@@ -33,18 +37,22 @@ function PaymentSuccessContent() {
           setOrderNumber(data.data.orderNumber);
           if (data.data.paymentStatus === "PAID") {
             setStatus("paid");
+            return;
           } else if (data.data.paymentStatus === "FAILED") {
             setStatus("failed");
-          } else {
-            setStatus("pending");
-            // Retry in 3 seconds
-            setTimeout(checkStatus, 3000);
+            return;
           }
-        } else {
-          setStatus("pending");
+        }
+        // Продолжаем polling
+        setStatus("pending");
+        if (attempts < maxAttempts) {
+          setTimeout(checkStatus, 2000);
         }
       } catch {
         setStatus("pending");
+        if (attempts < maxAttempts) {
+          setTimeout(checkStatus, 2000);
+        }
       }
     };
 
