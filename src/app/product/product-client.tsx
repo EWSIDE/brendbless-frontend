@@ -68,7 +68,7 @@ function Accordion({ title, children, defaultOpen = false }: { title: string; ch
         className={styles.accordionBtn}
       >
         <span>{title}</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: open ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ transform: open ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.25s ease" }}>
           <path d="M6 9l6 6 6-6" />
         </svg>
       </button>
@@ -139,7 +139,7 @@ export default function ProductClient() {
     return (
       <div className={styles.page} style={{ textAlign: "center", paddingTop: "80px" }}>
         <p style={{ color: "#333", fontSize: "16px", marginBottom: "24px" }}>{error || "товар не найден"}</p>
-        <Link href="/" className={styles.addBtn}>в каталог</Link>
+        <Link href="/" className={styles.addBtn} style={{ display: "inline-block", width: "auto" }}>в каталог</Link>
       </div>
     );
   }
@@ -153,18 +153,6 @@ export default function ProductClient() {
 
   return (
     <div className={styles.page}>
-      {/* Кнопка назад */}
-      <button
-        type="button"
-        onClick={() => router.back()}
-        className={styles.backBtn}
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M19 12H5" />
-          <path d="M12 19l-7-7 7-7" />
-        </svg>
-      </button>
-
       {/* Основная сетка */}
       <div className={styles.grid}>
         {/* Галерея */}
