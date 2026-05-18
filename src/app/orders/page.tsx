@@ -27,6 +27,7 @@ type Order = {
   id: string;
   orderNumber: string;
   status: string;
+  paymentStatus?: string;
   total: number;
   createdAt: string;
   items?: OrderItem[];
@@ -93,7 +94,9 @@ export default function OrdersPage() {
         throw new Error(data.error || `ошибка сервера ${res.status}`);
       }
 
-      setOrders(data.orders || data.data || []);
+      const allOrders: Order[] = data.orders || data.data || [];
+      // Показываем только оплаченные заказы
+      setOrders(allOrders.filter((o) => o.paymentStatus === "PAID"));
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "ошибка загрузки");
     } finally {
