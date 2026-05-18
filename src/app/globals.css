@@ -569,7 +569,7 @@ button[disabled]::after {
 .product-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 28px 20px;
+  gap: 36px 24px;
 }
 
 /* ─── Карточка товара ───────────────────────────────────────────── */
@@ -766,13 +766,13 @@ button[disabled]::after {
 
 /* ─── Card price row layout ─────────────────────────────────────── */
 
-/* Desktop: цена слева, размеры по центру, корзина справа — одна строка */
+/* Desktop: цена и размеры слева, корзина справа */
 .card-price-row {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .price-block {
@@ -781,30 +781,29 @@ button[disabled]::after {
   gap: 6px;
   flex-shrink: 0;
   justify-content: flex-start;
-  width: auto;
+  width: 100%;
 }
 
 /* sizes-and-cart: обёртка для размеров и кнопки корзины */
 .sizes-and-cart {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex: 1 1 auto;
-  width: auto;
-  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .sizes-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 6px;
   flex: 0 1 auto;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-content: center;
 }
 
 .add-to-cart-icon-btn {
-  margin-left: 4px;
+  margin-left: auto;
   flex-shrink: 0;
 }
 
