@@ -357,7 +357,7 @@ export function Storefront() {
   };
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-white text-[#2c2430]">
+    <main className="storefront-main min-h-screen overflow-x-hidden bg-white text-[#2c2430]">
       <div style={{ maxWidth: "1380px", margin: "0 auto", padding: "24px 24px 0" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <h1 style={{ fontSize: "28px", fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.5px", margin: 0, paddingLeft: 0 }}>

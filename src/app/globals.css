@@ -533,6 +533,13 @@ button[disabled]::after {
 }
 
 /* ─── Каталог ────────────────────────────────────────────────────── */
+.storefront-main {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(-50vw + 50%) !important;
+  padding: 0 !important;
+}
+
 .catalog {
   display: grid;
   gap: 40px;
