@@ -358,7 +358,7 @@ export function Storefront() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-white text-[#2c2430]">
-      <div style={{ margin: "0 auto", padding: "24px 48px 0" }}>
+      <div style={{ maxWidth: "1380px", margin: "0 auto", padding: "24px 24px 0" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <h1 style={{ fontSize: "28px", fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.5px", margin: 0, paddingLeft: 0 }}>
             каталог
@@ -405,7 +405,7 @@ export function Storefront() {
         </div>
       </div>
 
-      <div style={{ margin: "24px auto 0", padding: "0 48px" }}>
+      <div style={{ maxWidth: "1380px", margin: "24px auto 0", padding: "0 24px" }}>
         {loading ? (
           <section className="catalog">
             <div className="product-grid">
