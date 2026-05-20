@@ -58,6 +58,14 @@ function IconChevron() {
   );
 }
 
+type MissingSizeItem = {
+  itemId: string;
+  productName: string;
+  productImage: string | null;
+  orderNumber: string;
+  availableSizes: string[];
+};
+
 export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState<UserData | null>(null);
@@ -72,6 +80,12 @@ export default function ProfilePage() {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+
+  // Missing sizes state
+  const [missingSizeItems, setMissingSizeItems] = useState<MissingSizeItem[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
+  const [sizeSaving, setSizeSaving] = useState<string | null>(null);
+  const [sizeSuccess, setSizeSuccess] = useState<string | null>(null);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -120,7 +134,83 @@ export default function ProfilePage() {
       }
     }
     setLoading(false);
+
+    // Check for orders with missing sizes
+    if (token) {
+      fetch(`${API_URL}/api/orders/my-orders?limit=50`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((r) => r.json())
+        .then(async (result) => {
+          if (result.success && result.orders) {
+            const missing: MissingSizeItem[] = [];
+            for (const order of result.orders) {
+              // Only check paid orders that are not cancelled
+              if (order.paymentStatus !== "PAID" || order.status === "CANCELLED") continue;
+              const items = order.items || order.OrderItem || [];
+              for (const item of items) {
+                if (!item.size || item.size.trim() === "") {
+                  // Fetch product sizes
+                  let sizes: string[] = [];
+                  try {
+                    const pRes = await fetch(`${API_URL}/api/products/${item.productId}`);
+                    const pData = await pRes.json();
+                    if (pData.product?.attributes?.sizes) {
+                      const s = pData.product.attributes.sizes;
+                      if (Array.isArray(s)) sizes = s.map(String);
+                      else if (typeof s === "string") sizes = s.split(",").map((v: string) => v.trim()).filter(Boolean);
+                    } else if (pData.product?.tags) {
+                      try {
+                        const parsed = JSON.parse(pData.product.tags);
+                        if (Array.isArray(parsed)) sizes = parsed.map(String);
+                      } catch {
+                        sizes = pData.product.tags.split(",").map((v: string) => v.trim()).filter(Boolean);
+                      }
+                    }
+                  } catch {}
+                  if (sizes.length === 0) sizes = ["XS", "S", "M", "L"];
+                  missing.push({
+                    itemId: item.id,
+                    productName: item.productName,
+                    productImage: item.productImage,
+                    orderNumber: order.orderNumber,
+                    availableSizes: sizes,
+                  });
+                }
+              }
+            }
+            setMissingSizeItems(missing);
+          }
+        })
+        .catch(() => {});
+    }
   }, []);
+
+  const handleSizeSubmit = async (itemId: string) => {
+    const size = selectedSizes[itemId];
+    if (!size) return;
+    setSizeSaving(itemId);
+    const token = getCookie(ACCESS_TOKEN_COOKIE);
+    try {
+      const res = await fetch(`${API_URL}/api/orders/items/${itemId}/size`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ size }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSizeSuccess(itemId);
+        setTimeout(() => {
+          setMissingSizeItems((prev) => prev.filter((i) => i.itemId !== itemId));
+          setSizeSuccess(null);
+        }, 1500);
+      }
+    } catch {}
+    setSizeSaving(null);
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -291,6 +381,116 @@ export default function ProfilePage() {
           </button>
           <h1 style={{ margin: 0, fontSize: "28px", fontWeight: 600, letterSpacing: "-0.5px", color: "#333" }}>мой профиль</h1>
         </div>
+
+        {/* ⚠️ Missing size warning */}
+        {missingSizeItems.length > 0 && (
+          <div style={{
+            marginBottom: "20px",
+            padding: "20px 24px",
+            background: "linear-gradient(135deg, #fff1f5 0%, #ffe4ec 100%)",
+            border: "2px solid #f9a8d4",
+            borderRadius: "20px",
+            animation: "pulse-border 2s ease-in-out infinite",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px" }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e05" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 600, color: "#c0245e" }}>
+                укажите размер для ваших заказов!
+              </h3>
+            </div>
+            <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#7a2048", lineHeight: 1.5 }}>
+              в некоторых ваших оплаченных заказах не указан размер. пожалуйста, выберите размер для каждого товара, чтобы мы могли отправить правильный.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {missingSizeItems.map((item) => (
+                <div key={item.itemId} style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "12px 16px",
+                  background: "#fff",
+                  borderRadius: "14px",
+                  border: "1px solid #fce7f3",
+                  flexWrap: "wrap",
+                }}>
+                  {item.productImage && (
+                    <img
+                      src={item.productImage}
+                      alt={item.productName}
+                      style={{ width: "44px", height: "44px", borderRadius: "10px", objectFit: "cover", flexShrink: 0 }}
+                    />
+                  )}
+                  <div style={{ flex: 1, minWidth: "120px" }}>
+                    <p style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: "#333" }}>{item.productName}</p>
+                    <p style={{ margin: 0, fontSize: "12px", color: "#8e8e8e" }}>заказ #{item.orderNumber}</p>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                    {sizeSuccess === item.itemId ? (
+                      <span style={{ fontSize: "13px", color: "#16a34a", fontWeight: 600 }}>✓ сохранено</span>
+                    ) : (
+                      <>
+                        {item.availableSizes.map((s) => (
+                          <button
+                            key={s}
+                            type="button"
+                            onClick={() => setSelectedSizes((prev) => ({ ...prev, [item.itemId]: s }))}
+                            style={{
+                              width: "32px",
+                              height: "32px",
+                              borderRadius: "50%",
+                              border: selectedSizes[item.itemId] === s ? "2px solid #f1a7c8" : "1.5px solid #e5c7d6",
+                              background: selectedSizes[item.itemId] === s ? "#f1a7c8" : "#fff",
+                              color: selectedSizes[item.itemId] === s ? "#fff" : "#f1a7c8",
+                              fontSize: "11px",
+                              fontWeight: 600,
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              padding: 0,
+                              transition: "all 0.15s",
+                            }}
+                          >
+                            {s}
+                          </button>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => handleSizeSubmit(item.itemId)}
+                          disabled={!selectedSizes[item.itemId] || sizeSaving === item.itemId}
+                          style={{
+                            padding: "6px 14px",
+                            borderRadius: "20px",
+                            border: "none",
+                            background: selectedSizes[item.itemId] ? "#f1a7c8" : "#e5c7d6",
+                            color: "#fff",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            cursor: selectedSizes[item.itemId] ? "pointer" : "not-allowed",
+                            opacity: selectedSizes[item.itemId] ? 1 : 0.5,
+                            marginLeft: "4px",
+                          }}
+                        >
+                          {sizeSaving === item.itemId ? "..." : "ок"}
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <style>{`
+              @keyframes pulse-border {
+                0%, 100% { border-color: #f9a8d4; }
+                50% { border-color: #f472b6; }
+              }
+            `}</style>
+          </div>
+        )}
 
         <div className="profile-grid">
           {/* Левая колонка — аватар + меню */}
