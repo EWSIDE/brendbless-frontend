@@ -45,6 +45,7 @@ export default function AdminStatsPage() {
   const [period, setPeriod] = useState("30d");
   const [data, setData] = useState<StatsData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [tooltip, setTooltip] = useState<{ index: number; text: string } | null>(null);
 
   useEffect(() => {
     const rawUser = getCookie(USER_COOKIE);
@@ -160,26 +161,53 @@ export default function AdminStatsPage() {
 
           {/* Chart */}
           {data.chartData.length > 0 && (
-            <div style={{ background: "#fff", border: "1px solid #fdf2f8", borderRadius: "20px", padding: "20px", marginBottom: "28px" }}>
+            <div style={{ background: "#fff", border: "1px solid #fdf2f8", borderRadius: "20px", padding: "20px", marginBottom: "28px", position: "relative" }}>
               <p style={{ margin: "0 0 16px", fontSize: "15px", fontWeight: 600, color: "#333" }}>выручка по дням</p>
-              <div style={{ display: "flex", alignItems: "flex-end", gap: "3px", height: "160px", overflow: "hidden" }}>
+              <div style={{ display: "flex", alignItems: "flex-end", gap: "3px", height: "160px", overflow: "visible", position: "relative" }}>
                 {data.chartData.map((point, i) => {
                   const height = Math.max((point.revenue / maxRevenue) * 140, 4);
+                  const isActive = tooltip?.index === i;
                   return (
-                    <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }}>
+                    <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%", position: "relative" }}>
                       <div
-                        title={`${point.date}: ${point.revenue.toLocaleString("ru-RU")} ₽ (${point.orders} зак.)`}
+                        onClick={() => setTooltip(isActive ? null : { index: i, text: `${point.date}: ${point.revenue.toLocaleString("ru-RU")} ₽ (${point.orders} зак.)` })}
                         style={{
                           width: "100%",
                           maxWidth: "32px",
                           height: `${height}px`,
-                          background: "linear-gradient(180deg, #f9a8d4 0%, #fce7f3 100%)",
+                          background: isActive
+                            ? "linear-gradient(180deg, #f472b6 0%, #f9a8d4 100%)"
+                            : "linear-gradient(180deg, #f9a8d4 0%, #fce7f3 100%)",
                           borderRadius: "6px 6px 2px 2px",
-                          transition: "height 0.3s",
+                          transition: "height 0.3s, background 0.2s",
                           cursor: "pointer",
                           minWidth: "6px",
                         }}
                       />
+                      {/* Custom tooltip */}
+                      {isActive && (
+                        <div style={{
+                          position: "absolute",
+                          bottom: `${height + 8}px`,
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: "#fff",
+                          border: "1px solid #fce7f3",
+                          borderRadius: "12px",
+                          padding: "8px 14px",
+                          fontSize: "12px",
+                          fontWeight: 600,
+                          color: "#333",
+                          whiteSpace: "nowrap",
+                          boxShadow: "0 4px 16px rgba(241, 167, 200, 0.15)",
+                          zIndex: 10,
+                          pointerEvents: "none",
+                        }}>
+                          <span style={{ color: "#be185d" }}>{point.revenue.toLocaleString("ru-RU")} ₽</span>
+                          <span style={{ color: "#8e8e8e", marginLeft: "6px" }}>{point.orders} зак.</span>
+                          <div style={{ fontSize: "10px", color: "#8e8e8e", marginTop: "2px" }}>{point.date}</div>
+                        </div>
+                      )}
                       {data.chartData.length <= 14 && (
                         <span style={{ fontSize: "10px", color: "#8e8e8e", marginTop: "4px", whiteSpace: "nowrap" }}>
                           {point.date.slice(5)}
