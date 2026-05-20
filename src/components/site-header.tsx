@@ -150,7 +150,7 @@ export function SiteHeader() {
 
   return (
     <header className="site-header">
-      <div className="container header-row">
+      <div className="header-row" style={{ width: "100%", padding: "0 48px" }}>
         {/* Manager chat link */}
         <a
           href={settings.telegramManager}
