@@ -137,52 +137,68 @@ export default function ProfilePage() {
 
     // Check for orders with missing sizes
     if (token) {
-      fetch(`${API_URL}/api/orders/my-orders?limit=50`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((r) => r.json())
-        .then(async (result) => {
-          if (result.success && result.orders) {
-            const missing: MissingSizeItem[] = [];
-            for (const order of result.orders) {
-              // Only check paid orders that are not cancelled
-              if (order.paymentStatus !== "PAID" || order.status === "CANCELLED") continue;
-              const items = order.items || order.OrderItem || [];
-              for (const item of items) {
-                if (!item.size || item.size.trim() === "") {
-                  // Fetch product sizes
-                  let sizes: string[] = [];
-                  try {
-                    const pRes = await fetch(`${API_URL}/api/products/${item.productId}`);
-                    const pData = await pRes.json();
-                    if (pData.product?.attributes?.sizes) {
-                      const s = pData.product.attributes.sizes;
-                      if (Array.isArray(s)) sizes = s.map(String);
-                      else if (typeof s === "string") sizes = s.split(",").map((v: string) => v.trim()).filter(Boolean);
-                    } else if (pData.product?.tags) {
-                      try {
-                        const parsed = JSON.parse(pData.product.tags);
-                        if (Array.isArray(parsed)) sizes = parsed.map(String);
-                      } catch {
-                        sizes = pData.product.tags.split(",").map((v: string) => v.trim()).filter(Boolean);
-                      }
-                    }
-                  } catch {}
-                  if (sizes.length === 0) sizes = ["XS", "S", "M", "L"];
-                  missing.push({
-                    itemId: item.id,
-                    productName: item.productName,
-                    productImage: item.productImage,
-                    orderNumber: order.orderNumber,
-                    availableSizes: sizes,
-                  });
-                }
+      (async () => {
+        try {
+          const res = await fetch(`${API_URL}/api/orders/my-orders?limit=100`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const result = await res.json();
+          if (!result.success || !result.orders) return;
+
+          // Collect all items without size from paid, non-cancelled orders
+          const itemsWithoutSize: { item: any; orderNumber: string }[] = [];
+          for (const order of result.orders) {
+            if (order.paymentStatus !== "PAID" || order.status === "CANCELLED") continue;
+            const items = order.items || order.OrderItem || [];
+            for (const item of items) {
+              if (!item.size || item.size.trim() === "") {
+                itemsWithoutSize.push({ item, orderNumber: order.orderNumber });
               }
             }
-            setMissingSizeItems(missing);
           }
-        })
-        .catch(() => {});
+
+          if (itemsWithoutSize.length === 0) return;
+
+          // Fetch product sizes in parallel (deduplicate by productId)
+          const uniqueProductIds = [...new Set(itemsWithoutSize.map(x => x.item.productId))];
+          const sizeMap: Record<string, string[]> = {};
+
+          await Promise.all(
+            uniqueProductIds.map(async (productId) => {
+              try {
+                const pRes = await fetch(`${API_URL}/api/products/${productId}`);
+                const pData = await pRes.json();
+                let sizes: string[] = [];
+                if (pData.product?.attributes?.sizes) {
+                  const s = pData.product.attributes.sizes;
+                  if (Array.isArray(s)) sizes = s.map(String);
+                  else if (typeof s === "string") sizes = s.split(",").map((v: string) => v.trim()).filter(Boolean);
+                } else if (pData.product?.tags) {
+                  try {
+                    const parsed = JSON.parse(pData.product.tags);
+                    if (Array.isArray(parsed)) sizes = parsed.map(String);
+                  } catch {
+                    sizes = pData.product.tags.split(",").map((v: string) => v.trim()).filter(Boolean);
+                  }
+                }
+                sizeMap[productId] = sizes.length > 0 ? sizes : ["XS", "S", "M", "L"];
+              } catch {
+                sizeMap[productId] = ["XS", "S", "M", "L"];
+              }
+            })
+          );
+
+          const missing: MissingSizeItem[] = itemsWithoutSize.map(({ item, orderNumber }) => ({
+            itemId: item.id,
+            productName: item.productName,
+            productImage: item.productImage,
+            orderNumber,
+            availableSizes: sizeMap[item.productId] || ["XS", "S", "M", "L"],
+          }));
+
+          setMissingSizeItems(missing);
+        } catch {}
+      })();
     }
   }, []);
 
@@ -345,6 +361,13 @@ export default function ProfilePage() {
         .profile-menu-link:hover {
           background: #fff5f8;
         }
+        .missing-size-item {
+          padding: 10px 14px;
+          background: #fff;
+          borderRadius: 12px;
+          border: 1px solid #fce7f3;
+          border-radius: 12px;
+        }
         @media (max-width: 767px) {
           .profile-shell {
             padding: 16px 12px 80px;
@@ -352,6 +375,9 @@ export default function ProfilePage() {
           .profile-card {
             padding: 20px 16px;
             border-radius: 20px;
+          }
+          .missing-size-item {
+            padding: 10px 12px;
           }
         }
       `}</style>
@@ -405,30 +431,23 @@ export default function ProfilePage() {
             <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#7a2048", lineHeight: 1.5 }}>
               в некоторых ваших оплаченных заказах не указан размер. пожалуйста, выберите размер для каждого товара, чтобы мы могли отправить правильный.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", maxHeight: "400px", overflowY: "auto", paddingRight: "4px" }}>
               {missingSizeItems.map((item) => (
-                <div key={item.itemId} style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  padding: "12px 16px",
-                  background: "#fff",
-                  borderRadius: "14px",
-                  border: "1px solid #fce7f3",
-                  flexWrap: "wrap",
-                }}>
-                  {item.productImage && (
-                    <img
-                      src={item.productImage}
-                      alt={item.productName}
-                      style={{ width: "44px", height: "44px", borderRadius: "10px", objectFit: "cover", flexShrink: 0 }}
-                    />
-                  )}
-                  <div style={{ flex: 1, minWidth: "120px" }}>
-                    <p style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: "#333" }}>{item.productName}</p>
-                    <p style={{ margin: 0, fontSize: "12px", color: "#8e8e8e" }}>заказ #{item.orderNumber}</p>
+                <div key={item.itemId} className="missing-size-item">
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                    {item.productImage && (
+                      <img
+                        src={item.productImage}
+                        alt={item.productName}
+                        style={{ width: "40px", height: "40px", borderRadius: "8px", objectFit: "cover", flexShrink: 0 }}
+                      />
+                    )}
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "#333", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.productName}</p>
+                      <p style={{ margin: 0, fontSize: "11px", color: "#8e8e8e" }}>заказ #{item.orderNumber}</p>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "5px", flexWrap: "wrap", marginTop: "6px" }}>
                     {sizeSuccess === item.itemId ? (
                       <span style={{ fontSize: "13px", color: "#16a34a", fontWeight: 600 }}>✓ сохранено</span>
                     ) : (
@@ -439,13 +458,13 @@ export default function ProfilePage() {
                             type="button"
                             onClick={() => setSelectedSizes((prev) => ({ ...prev, [item.itemId]: s }))}
                             style={{
-                              width: "32px",
-                              height: "32px",
+                              width: "30px",
+                              height: "30px",
                               borderRadius: "50%",
                               border: selectedSizes[item.itemId] === s ? "2px solid #f1a7c8" : "1.5px solid #e5c7d6",
                               background: selectedSizes[item.itemId] === s ? "#f1a7c8" : "#fff",
                               color: selectedSizes[item.itemId] === s ? "#fff" : "#f1a7c8",
-                              fontSize: "11px",
+                              fontSize: "10px",
                               fontWeight: 600,
                               cursor: "pointer",
                               display: "flex",
@@ -463,16 +482,16 @@ export default function ProfilePage() {
                           onClick={() => handleSizeSubmit(item.itemId)}
                           disabled={!selectedSizes[item.itemId] || sizeSaving === item.itemId}
                           style={{
-                            padding: "6px 14px",
-                            borderRadius: "20px",
+                            padding: "5px 12px",
+                            borderRadius: "16px",
                             border: "none",
                             background: selectedSizes[item.itemId] ? "#f1a7c8" : "#e5c7d6",
                             color: "#fff",
-                            fontSize: "12px",
+                            fontSize: "11px",
                             fontWeight: 600,
                             cursor: selectedSizes[item.itemId] ? "pointer" : "not-allowed",
                             opacity: selectedSizes[item.itemId] ? 1 : 0.5,
-                            marginLeft: "4px",
+                            marginLeft: "2px",
                           }}
                         >
                           {sizeSaving === item.itemId ? "..." : "ок"}
@@ -483,6 +502,9 @@ export default function ProfilePage() {
                 </div>
               ))}
             </div>
+            <p style={{ margin: "12px 0 0 0", fontSize: "12px", color: "#a0506e", textAlign: "center" }}>
+              {missingSizeItems.length} {missingSizeItems.length === 1 ? "товар" : missingSizeItems.length < 5 ? "товара" : "товаров"} без размера
+            </p>
             <style>{`
               @keyframes pulse-border {
                 0%, 100% { border-color: #f9a8d4; }
