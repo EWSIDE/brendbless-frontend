@@ -53,7 +53,9 @@ export default function AdminOrdersPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setOrders(data.orders || data.data?.orders || []);
+        const allOrders = data.orders || data.data?.orders || [];
+        // Показываем только оплаченные заказы
+        setOrders(allOrders.filter((o: Order) => o.paymentStatus === "PAID"));
       }
     } catch (e) {
       console.error(e);
@@ -261,8 +263,24 @@ export default function AdminOrdersPage() {
                                 )}
                               </div>
                               <div style={{ flex: 1 }}>
-                                <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "#333" }}>{item.productName}{item.size ? ` (${item.size})` : ''}</p>
-                                <p style={{ margin: 0, fontSize: "12px", color: "#8e8e8e" }}>× {item.quantity} · {item.unitPrice} ₽</p>
+                                <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "#333" }}>{item.productName}</p>
+                                  {item.size && (
+                                    <span style={{
+                                      display: "inline-block",
+                                      padding: "2px 10px",
+                                      borderRadius: "8px",
+                                      background: "#fce7f3",
+                                      color: "#be185d",
+                                      fontWeight: 700,
+                                      fontSize: "12px",
+                                      letterSpacing: "0.5px",
+                                    }}>
+                                      {item.size}
+                                    </span>
+                                  )}
+                                </div>
+                                <p style={{ margin: "2px 0 0", fontSize: "12px", color: "#8e8e8e" }}>× {item.quantity} · {item.unitPrice} ₽</p>
                               </div>
                               <span style={{ fontSize: "13px", fontWeight: 700, color: "#333" }}>{item.total} ₽</span>
                             </div>

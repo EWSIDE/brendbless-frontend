@@ -175,7 +175,7 @@ export function AuthForm({ title, description, buttonText }: AuthFormProps) {
               className="quick-login-btn"
               onClick={handleQuickLogin}
             >
-              ✓ войти
+              войти
             </button>
             <hr style={{ border: "none", borderTop: "1px solid #fdf2f8", margin: "12px 0" }} />
             <p style={{ margin: 0, fontSize: "13px", color: "#8e8e8e" }}>или войдите в другой аккаунт:</p>

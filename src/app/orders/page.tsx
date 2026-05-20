@@ -352,9 +352,24 @@ export default function OrdersPage() {
                                 )}
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
-                                <p style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: "#333" }}>
-                                  {item.productName}{item.size ? ` (${item.size})` : ''}
-                                </p>
+                                <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                                  <p style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: "#333" }}>
+                                    {item.productName}
+                                  </p>
+                                  {item.size && (
+                                    <span style={{
+                                      display: "inline-block",
+                                      padding: "2px 10px",
+                                      borderRadius: "8px",
+                                      background: "#fce7f3",
+                                      color: "#be185d",
+                                      fontWeight: 700,
+                                      fontSize: "12px",
+                                    }}>
+                                      {item.size}
+                                    </span>
+                                  )}
+                                </div>
                                 <p style={{ margin: "2px 0 0 0", fontSize: "12px", color: "#8e8e8e" }}>× {item.quantity}</p>
                               </div>
                               <p style={{ margin: 0, fontWeight: 700, fontSize: "14px", color: "#333", flexShrink: 0 }}>

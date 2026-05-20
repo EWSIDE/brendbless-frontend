@@ -579,6 +579,9 @@ button[disabled]::after {
   border-radius: 0;
   overflow: visible;
   box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .card:hover {
@@ -1180,13 +1183,18 @@ button[type="submit"]:disabled {
 .quick-login-btn {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(135deg, #f472b6 0%, #ec4899 50%, #db2777 100%) !important;
+  background: #f1a7c8 !important;
   color: white;
   border: none;
   border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.quick-login-btn:hover {
+  opacity: 0.85;
 }
 
 /* ─── Переключение между входом и регистрацией ─────────────────────── */
@@ -1869,4 +1877,5 @@ button[type="submit"]:disabled {
   text-decoration: none;
   color: inherit;
   display: block;
+  flex: 1;
 }
