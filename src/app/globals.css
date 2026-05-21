@@ -582,8 +582,8 @@ button[disabled]::after {
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 48px 40px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 32px 24px;
 }
 
 /* ─── Карточка товара ───────────────────────────────────────────── */
@@ -664,10 +664,10 @@ button[disabled]::after {
 }
 
 .card-content {
-  padding: 16px 0 0;
+  padding: 12px 0 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 .sizes {
@@ -686,7 +686,7 @@ button[disabled]::after {
 }
 
 .product-name {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 400;
   margin: 0;
   color: var(--text);
@@ -707,7 +707,7 @@ button[disabled]::after {
 }
 
 .price-current {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 400;
   color: #f1a7c8;
 }
@@ -719,12 +719,12 @@ button[disabled]::after {
 }
 
 .size-chip-btn {
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   padding: 0;
   border: 1.5px solid #f1a7c8;
   border-radius: 50%;
-  font-size: 10px;
+  font-size: 9px;
   color: #f1a7c8;
   background: transparent;
   cursor: pointer;
@@ -749,8 +749,8 @@ button[disabled]::after {
 }
 
 .add-to-cart-icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border: none;
   border-radius: 50%;
   background: #f1a7c8;
@@ -764,6 +764,11 @@ button[disabled]::after {
   box-shadow: none;
   padding: 0;
   font-family: inherit;
+}
+
+.add-to-cart-icon-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
 .add-to-cart-icon-btn:hover:not(:disabled) {
