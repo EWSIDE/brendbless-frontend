@@ -126,9 +126,58 @@ export function AuthForm({ title, description, buttonText }: AuthFormProps) {
 
   const handleQuickLogin = async () => {
     if (!lastUserEmail) return;
-    
-    deleteCookie(USER_COOKIE);
-    router.push("/login");
+    setLoading(true);
+    setError("");
+
+    try {
+      const refreshToken = getCookie(REFRESH_TOKEN_COOKIE);
+      if (!refreshToken) {
+        // No refresh token — just pre-fill email and let user enter password
+        setError("сессия истекла, введите пароль");
+        setLoading(false);
+        return;
+      }
+
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.brandbless.ru";
+      const response = await fetch(`${API_BASE}/api/auth/refresh`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (!response.ok) {
+        // Refresh token expired — clear and let user login manually
+        deleteCookie(REFRESH_TOKEN_COOKIE);
+        setError("сессия истекла, введите пароль");
+        setLoading(false);
+        return;
+      }
+
+      const result = await response.json();
+
+      if (result.success && result.data?.accessToken) {
+        setCookie(ACCESS_TOKEN_COOKIE, result.data.accessToken);
+        if (result.data.refreshToken) {
+          setCookie(REFRESH_TOKEN_COOKIE, result.data.refreshToken);
+        }
+        const userPayload = {
+          id: result.data.user?.id || "",
+          email: result.data.user?.email || lastUserEmail,
+          role: result.data.user?.role || "USER",
+        };
+        setCookie(USER_COOKIE, JSON.stringify(userPayload));
+        setCookie(LAST_USER_COOKIE, JSON.stringify(userPayload));
+        router.push("/");
+        router.refresh();
+      } else {
+        deleteCookie(REFRESH_TOKEN_COOKIE);
+        setError("сессия истекла, введите пароль");
+      }
+    } catch {
+      setError("ошибка соединения с сервером");
+    }
+
+    setLoading(false);
   };
 
   return (
