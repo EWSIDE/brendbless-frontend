@@ -1319,6 +1319,9 @@ button[type="submit"]:disabled {
 @media (max-width: 640px) {
 .site-header {
   background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .dropdown-trigger {

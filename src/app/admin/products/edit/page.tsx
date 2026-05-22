@@ -53,6 +53,14 @@ function EditProductContent() {
   const [productSizes, setProductSizes] = useState<string[]>([]);
   const [sizeInput, setSizeInput] = useState("");
 
+  // Product sections (accordions)
+  const [characteristics, setCharacteristics] = useState("");
+  const [care, setCare] = useState("");
+  const [sizeChart, setSizeChart] = useState("");
+  const [sizeChartImage, setSizeChartImage] = useState("");
+  const [delivery, setDelivery] = useState("");
+  const sizeChartFileRef = useRef<HTMLInputElement>(null);
+
   // Drag & drop for photos
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
@@ -84,6 +92,14 @@ function EditProductContent() {
         setProductIsFeatured(p.isFeatured);
         setProductIsPublished(p.isPublished);
         setProductSizes(parseTags(p.tags));
+        // Load sections from attributes
+        if (p.attributes) {
+          setCharacteristics(p.attributes.characteristics || "");
+          setCare(p.attributes.care || "");
+          setSizeChart(p.attributes.sizeChart || "");
+          setSizeChartImage(p.attributes.sizeChartImage || "");
+          setDelivery(p.attributes.delivery || "");
+        }
       }
     } catch (e) {
       console.error(e);
@@ -132,6 +148,14 @@ function EditProductContent() {
 
     setSaving(true);
     const token = getToken();
+    // Build attributes with sizes + sections
+    const attributes: Record<string, any> = { sizes: productSizes };
+    if (characteristics.trim()) attributes.characteristics = characteristics.trim();
+    if (care.trim()) attributes.care = care.trim();
+    if (sizeChart.trim()) attributes.sizeChart = sizeChart.trim();
+    if (sizeChartImage.trim()) attributes.sizeChartImage = sizeChartImage.trim();
+    if (delivery.trim()) attributes.delivery = delivery.trim();
+
     const body = {
       name: productName,
       slug: productSlug || productName.toLowerCase().replace(/\s+/g, "-"),
@@ -141,6 +165,7 @@ function EditProductContent() {
       description: productDesc || null,
       images: JSON.stringify(productImages),
       tags: productSizes,
+      attributes,
       isActive: productIsActive,
       isFeatured: productIsFeatured,
       isPublished: productIsPublished,
@@ -282,6 +307,54 @@ function EditProductContent() {
             {uploadingCount > 0 ? <><Loader2 size={16} className="spin-icon" /> загрузка...</> : <><Upload size={18} /> выбрать файлы</>}
           </button>
           <p style={{ fontSize: "12px", color: "#9ca3af", marginTop: "10px" }}>первое фото — главное. перетащите для изменения порядка.</p>
+        </section>
+
+        {/* Product Sections (accordions on product page) */}
+        <section style={{ background: "#fff", border: "1px solid #fdf2f8", borderRadius: "20px", padding: "24px" }}>
+          <h2 style={{ margin: "0 0 6px", fontSize: "14px", fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.5px" }}>секции товара</h2>
+          <p style={{ margin: "0 0 16px", fontSize: "12px", color: "#9ca3af" }}>если оставить пустым — секция не будет отображаться</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            <label style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+              <span style={{ fontSize: "13px", color: "#6b7280", fontWeight: 500 }}>характеристики</span>
+              <textarea value={characteristics} onChange={(e) => setCharacteristics(e.target.value)} style={{ ...inputStyle, minHeight: "80px", resize: "vertical" }} placeholder="состав, материал, страна производства..." />
+            </label>
+            <label style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+              <span style={{ fontSize: "13px", color: "#6b7280", fontWeight: 500 }}>уход за изделием</span>
+              <textarea value={care} onChange={(e) => setCare(e.target.value)} style={{ ...inputStyle, minHeight: "80px", resize: "vertical" }} placeholder="рекомендации по стирке, глажке..." />
+            </label>
+            <label style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+              <span style={{ fontSize: "13px", color: "#6b7280", fontWeight: 500 }}>размерная таблица — подпись</span>
+              <textarea value={sizeChart} onChange={(e) => setSizeChart(e.target.value)} style={{ ...inputStyle, minHeight: "60px", resize: "vertical" }} placeholder="текстовое описание размеров..." />
+            </label>
+            <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+              <span style={{ fontSize: "13px", color: "#6b7280", fontWeight: 500 }}>размерная таблица — фото</span>
+              {sizeChartImage && (
+                <div style={{ position: "relative", width: "200px", marginBottom: "8px" }}>
+                  <img src={sizeChartImage} alt="size chart" style={{ width: "100%", borderRadius: "12px", border: "1px solid #f3e8ee" }} />
+                  <button type="button" onClick={() => setSizeChartImage("")} className="img-remove-btn" style={{ position: "absolute", top: "4px", right: "4px", width: "24px", height: "24px", borderRadius: "50%", background: "rgba(255,255,255,0.95)", color: "#f1a7c8", border: "1px solid #f1a7c8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}><X size={12} /></button>
+                </div>
+              )}
+              <input ref={sizeChartFileRef} type="file" accept="image/*" onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const token = getToken();
+                const formData = new FormData();
+                formData.append("file", file);
+                try {
+                  const res = await fetch(`${API_URL}/api/upload`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: formData });
+                  const data = await res.json();
+                  if (data.success && data.data?.url) setSizeChartImage(data.data.url);
+                } catch (err) { console.error(err); }
+              }} style={{ display: "none" }} />
+              <button type="button" onClick={() => sizeChartFileRef.current?.click()} style={{ padding: "10px 16px", background: "#fff", border: "1.5px dashed #f1a7c8", borderRadius: "12px", cursor: "pointer", fontSize: "13px", color: "#f1a7c8", fontWeight: 500, display: "flex", alignItems: "center", gap: "6px", width: "fit-content" }}>
+                <ImagePlus size={14} /> {sizeChartImage ? "заменить фото" : "загрузить фото"}
+              </button>
+            </div>
+            <label style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+              <span style={{ fontSize: "13px", color: "#6b7280", fontWeight: 500 }}>доставка</span>
+              <textarea value={delivery} onChange={(e) => setDelivery(e.target.value)} style={{ ...inputStyle, minHeight: "80px", resize: "vertical" }} placeholder="информация о доставке для этого товара..." />
+            </label>
+          </div>
         </section>
 
         {/* Toggles */}

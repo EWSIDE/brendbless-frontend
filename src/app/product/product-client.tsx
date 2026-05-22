@@ -66,6 +66,9 @@ export default function ProductClient() {
   const [added, setAdded] = useState(false);
   const [toast, setToast] = useState(false);
   const [descOpen, setDescOpen] = useState(false);
+  const [characteristicsOpen, setCharacteristicsOpen] = useState(false);
+  const [careOpen, setCareOpen] = useState(false);
+  const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const [deliveryOpen, setDeliveryOpen] = useState(false);
 
   useEffect(() => {
@@ -222,27 +225,98 @@ export default function ProductClient() {
             </div>
           )}
 
+          {/* Аккордеон: характеристики */}
+          {product.attributes?.characteristics && (
+            <div className="pdp-accordion">
+              <button
+                type="button"
+                className="pdp-accordion-trigger"
+                onClick={() => setCharacteristicsOpen(!characteristicsOpen)}
+              >
+                <span>характеристики</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: characteristicsOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+              {characteristicsOpen && (
+                <div className="pdp-accordion-content">
+                  <p className="pdp-description">{product.attributes.characteristics}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Аккордеон: уход за изделием */}
+          {product.attributes?.care && (
+            <div className="pdp-accordion">
+              <button
+                type="button"
+                className="pdp-accordion-trigger"
+                onClick={() => setCareOpen(!careOpen)}
+              >
+                <span>уход за изделием</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: careOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+              {careOpen && (
+                <div className="pdp-accordion-content">
+                  <p className="pdp-description">{product.attributes.care}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Аккордеон: размерная таблица */}
+          {(product.attributes?.sizeChart || product.attributes?.sizeChartImage) && (
+            <div className="pdp-accordion">
+              <button
+                type="button"
+                className="pdp-accordion-trigger"
+                onClick={() => setSizeChartOpen(!sizeChartOpen)}
+              >
+                <span>размерная таблица</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: sizeChartOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+              {sizeChartOpen && (
+                <div className="pdp-accordion-content">
+                  {product.attributes?.sizeChartImage && (
+                    <img
+                      src={product.attributes.sizeChartImage}
+                      alt="размерная таблица"
+                      style={{ width: "100%", borderRadius: "12px", marginBottom: product.attributes?.sizeChart ? "12px" : "0" }}
+                    />
+                  )}
+                  {product.attributes?.sizeChart && (
+                    <p className="pdp-description">{product.attributes.sizeChart}</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Аккордеон: доставка */}
-          <div className="pdp-accordion">
-            <button
-              type="button"
-              className="pdp-accordion-trigger"
-              onClick={() => setDeliveryOpen(!deliveryOpen)}
-              style={{ color: "#1a1a1a" }}
-            >
-              <span>доставка</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: deliveryOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>
-                <path d="M6 9l6 6 6-6"/>
-              </svg>
-            </button>
-            {deliveryOpen && (
-              <div className="pdp-accordion-content">
-                <p className="pdp-description" style={{ color: "#999" }}>
-                  доставка осуществляется сервисом доставки сдэк. отправка заказов производится в течение 2-х - 3-х недель с момента закрытия предзаказа (сроки отправки могут быть изменены, о чём сообщается в официальных социальных сетях продавца или на сайте).
-                </p>
-              </div>
-            )}
-          </div>
+          {product.attributes?.delivery && (
+            <div className="pdp-accordion">
+              <button
+                type="button"
+                className="pdp-accordion-trigger"
+                onClick={() => setDeliveryOpen(!deliveryOpen)}
+              >
+                <span>доставка</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: deliveryOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+              {deliveryOpen && (
+                <div className="pdp-accordion-content">
+                  <p className="pdp-description">{product.attributes.delivery}</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
