@@ -153,6 +153,9 @@ a {
   background: #f8f8f8;
   box-shadow: none !important;
   border: none !important;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header-row {
