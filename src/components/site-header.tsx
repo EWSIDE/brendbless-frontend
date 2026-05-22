@@ -150,42 +150,41 @@ export function SiteHeader() {
 
   return (
     <header className="site-header">
-      <div className="header-row" style={{ maxWidth: "1380px", margin: "0 auto", padding: "0 24px", width: "100%" }}>
+      <div className="header-row" style={{ maxWidth: "1380px", margin: "0 auto", padding: "12px 24px", width: "100%", height: "56px" }}>
         {/* Manager chat link */}
         <a
           href={settings.telegramManager}
           target="_blank"
           rel="noopener noreferrer"
           className="manager-link"
-          style={{ fontSize: "15px" }}
+          style={{ fontSize: "14px" }}
         >
-          <span className="manager-link-text">перейти в чат с менеджером</span>
+          <span className="manager-link-text">чат с менеджером</span>
           <ArrowIcon />
         </a>
 
         {/* Catalog link */}
-        <Link href="/" className="catalog-link">
+        <Link href="/" style={{ fontSize: "15px", fontWeight: 600, color: "#2c2430", letterSpacing: "-0.02em" }}>
           каталог
         </Link>
 
         {/* Right side - cart and cabinet */}
-        <nav className="nav" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <Link href="/cart" style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", color: "#f1a7c8", fontSize: "14px", fontWeight: 500 }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <nav className="nav" style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+          <Link href="/cart" style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c2430" }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M7 9V7.75A5 5 0 0 1 12 3a5 5 0 0 1 5 4.75V9"/>
               <path d="M5 9h14l-1 10a2 2 0 0 1-2 1.8H8a2 2 0 0 1-2-1.8L5 9z"/>
             </svg>
-            <span className="cart-label">корзина{cartCount > 0 ? ` (${cartCount})` : ""}</span>
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </Link>
           
           {user ? (
             <div className="dropdown" ref={menuRef}>
               <button 
-                className="cabinet-btn"
                 onClick={() => setMenuOpen(!menuOpen)}
+                style={{ background: "none", border: "none", padding: "6px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c2430", borderRadius: "50%" }}
               >
                 <UserIcon />
-                <span>кабинет</span>
               </button>
               {menuOpen && (
                 <div className="dropdown-menu" style={{ borderRadius: "24px", padding: "12px 0" }}>
@@ -221,11 +220,10 @@ export function SiteHeader() {
           ) : (
             <div className="dropdown" ref={menuRef}>
               <button 
-                className="cabinet-btn"
                 onClick={() => setMenuOpen(!menuOpen)}
+                style={{ background: "none", border: "none", padding: "6px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c2430", borderRadius: "50%" }}
               >
                 <UserIcon />
-                <span>кабинет</span>
               </button>
               {menuOpen && (
                 <div className="dropdown-menu" style={{ borderRadius: "24px", padding: "12px 0" }}>
