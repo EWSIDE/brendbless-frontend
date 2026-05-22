@@ -150,7 +150,7 @@ export function SiteHeader() {
 
   return (
     <header className="site-header">
-      <div className="header-row" style={{ maxWidth: "1380px", margin: "0 auto", padding: "12px 24px", width: "100%", height: "56px" }}>
+      <div className="header-row" style={{ maxWidth: "1380px", margin: "0 auto", padding: "8px 24px", width: "100%", height: "44px" }}>
         {/* Manager chat link */}
         <a
           href={settings.telegramManager}
@@ -164,14 +164,14 @@ export function SiteHeader() {
         </a>
 
         {/* Catalog link */}
-        <Link href="/" style={{ fontSize: "15px", fontWeight: 600, color: "#2c2430", letterSpacing: "-0.02em" }}>
+        <Link href="/" style={{ fontSize: "15px", fontWeight: 600, color: "#f1a7c8", letterSpacing: "-0.02em" }}>
           каталог
         </Link>
 
         {/* Right side - cart and cabinet */}
         <nav className="nav" style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-          <Link href="/cart" style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c2430" }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <Link href="/cart" style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", color: "#f1a7c8" }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M7 9V7.75A5 5 0 0 1 12 3a5 5 0 0 1 5 4.75V9"/>
               <path d="M5 9h14l-1 10a2 2 0 0 1-2 1.8H8a2 2 0 0 1-2-1.8L5 9z"/>
             </svg>
@@ -182,7 +182,7 @@ export function SiteHeader() {
             <div className="dropdown" ref={menuRef}>
               <button 
                 onClick={() => setMenuOpen(!menuOpen)}
-                style={{ background: "none", border: "none", padding: "6px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c2430", borderRadius: "50%" }}
+                style={{ background: "none", border: "none", padding: "6px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#f1a7c8", borderRadius: "50%" }}
               >
                 <UserIcon />
               </button>
@@ -221,7 +221,7 @@ export function SiteHeader() {
             <div className="dropdown" ref={menuRef}>
               <button 
                 onClick={() => setMenuOpen(!menuOpen)}
-                style={{ background: "none", border: "none", padding: "6px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c2430", borderRadius: "50%" }}
+                style={{ background: "none", border: "none", padding: "6px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#f1a7c8", borderRadius: "50%" }}
               >
                 <UserIcon />
               </button>

@@ -161,7 +161,7 @@ a {
 
 /* Отступ сверху чтобы контент не прятался под fixed header */
 body {
-  padding-top: 56px;
+  padding-top: 44px;
 }
 
 .header-row {
