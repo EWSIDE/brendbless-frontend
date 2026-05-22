@@ -46,7 +46,6 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
   margin: 0;
-  padding: 0;
   scrollbar-width: none;
 }
 
@@ -153,9 +152,16 @@ a {
   background: #f8f8f8;
   box-shadow: none !important;
   border: none !important;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
+}
+
+/* Отступ сверху чтобы контент не прятался под fixed header */
+body {
+  padding-top: 56px;
 }
 
 .header-row {
@@ -1322,9 +1328,6 @@ button[type="submit"]:disabled {
 @media (max-width: 640px) {
 .site-header {
   background: #ffffff;
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 
 .dropdown-trigger {
