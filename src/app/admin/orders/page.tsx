@@ -48,14 +48,13 @@ export default function AdminOrdersPage() {
   async function loadOrders() {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/orders/admin/all?limit=100`, {
+      const res = await fetch(`${API_BASE}/api/orders/admin/all?limit=1000`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       const data = await res.json();
       if (data.success) {
         const allOrders = data.orders || data.data?.orders || [];
-        // Показываем только оплаченные заказы
-        setOrders(allOrders.filter((o: Order) => o.paymentStatus === "PAID"));
+        setOrders(allOrders);
       }
     } catch (e) {
       console.error(e);
