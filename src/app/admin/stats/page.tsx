@@ -243,48 +243,58 @@ export default function AdminStatsPage() {
           )}
 
           {/* Items to order - MAIN FEATURE */}
-          {data.itemsToOrder.length > 0 && (
-            <div style={{ background: "#fff", border: "2px solid #fce7f3", borderRadius: "20px", padding: "20px", marginBottom: "28px" }}>
-              <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: 700, color: "#be185d" }}>🛒 нужно заказать</p>
-              <p style={{ margin: "0 0 14px", fontSize: "12px", color: "#8e8e8e" }}>товары из оплаченных заказов, которые ещё не отправлены</p>
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
-                  <thead>
-                    <tr style={{ borderBottom: "1px solid #fdf2f8" }}>
-                      <th style={{ textAlign: "left", padding: "8px 12px", color: "#6b7280", fontWeight: 600, fontSize: "12px" }}>товар</th>
-                      <th style={{ textAlign: "center", padding: "8px 12px", color: "#6b7280", fontWeight: 600, fontSize: "12px" }}>размер</th>
-                      <th style={{ textAlign: "center", padding: "8px 12px", color: "#6b7280", fontWeight: 600, fontSize: "12px" }}>кол-во</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.itemsToOrder.map((item, i) => (
-                      <tr key={i} style={{ borderBottom: "1px solid #fdf2f8" }}>
-                        <td style={{ padding: "10px 12px", color: "#333", fontWeight: 500 }}>{item.productName}</td>
-                        <td style={{ padding: "10px 12px", textAlign: "center" }}>
-                          {item.size ? (
-                            <span style={{
-                              display: "inline-block",
-                              padding: "3px 12px",
-                              borderRadius: "8px",
-                              background: "#fce7f3",
-                              color: "#be185d",
-                              fontWeight: 700,
-                              fontSize: "13px",
-                            }}>
-                              {item.size}
+          {data.itemsToOrder.length > 0 && (() => {
+            // Группируем по товарам
+            const grouped: Record<string, { sizes: Record<string, number>; total: number }> = {};
+            data.itemsToOrder.forEach(item => {
+              if (!grouped[item.productName]) {
+                grouped[item.productName] = { sizes: {}, total: 0 };
+              }
+              const sizeKey = item.size || "без размера";
+              grouped[item.productName].sizes[sizeKey] = (grouped[item.productName].sizes[sizeKey] || 0) + item.quantity;
+              grouped[item.productName].total += item.quantity;
+            });
+            const sortedProducts = Object.entries(grouped).sort((a, b) => b[1].total - a[1].total);
+
+            return (
+              <div style={{ background: "#fff", border: "2px solid #fce7f3", borderRadius: "20px", padding: "20px", marginBottom: "28px" }}>
+                <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: 700, color: "#be185d" }}>🛒 нужно заказать</p>
+                <p style={{ margin: "0 0 16px", fontSize: "12px", color: "#8e8e8e" }}>товары из оплаченных заказов, которые ещё не отправлены</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {sortedProducts.map(([productName, info]) => (
+                    <div key={productName} style={{ background: "#fffbfd", border: "1px solid #fdf2f8", borderRadius: "16px", padding: "14px 16px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                        <p style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: "#333" }}>{productName}</p>
+                        <span style={{ fontSize: "13px", fontWeight: 700, color: "#be185d", background: "#fce7f3", padding: "3px 10px", borderRadius: "12px" }}>
+                          {info.total} шт.
+                        </span>
+                      </div>
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        {Object.entries(info.sizes).sort((a, b) => b[1] - a[1]).map(([size, qty]) => (
+                          <div key={size} style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            padding: "6px 12px",
+                            borderRadius: "10px",
+                            background: size === "без размера" ? "#f3f4f6" : "#fce7f3",
+                            border: size === "без размера" ? "1px solid #e5e7eb" : "1px solid #fbcfe8",
+                          }}>
+                            <span style={{ fontSize: "13px", fontWeight: 700, color: size === "без размера" ? "#6b7280" : "#be185d" }}>
+                              {size}
                             </span>
-                          ) : (
-                            <span style={{ color: "#9ca3af" }}>—</span>
-                          )}
-                        </td>
-                        <td style={{ padding: "10px 12px", textAlign: "center", fontWeight: 700, color: "#333", fontSize: "15px" }}>{item.quantity}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                            <span style={{ fontSize: "12px", color: "#6b7280", fontWeight: 500 }}>
+                              × {qty}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Top products */}
           {data.topProducts.length > 0 && (

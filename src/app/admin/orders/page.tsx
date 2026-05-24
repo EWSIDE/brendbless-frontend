@@ -54,7 +54,7 @@ export default function AdminOrdersPage() {
       const data = await res.json();
       if (data.success) {
         const allOrders = data.orders || data.data?.orders || [];
-        setOrders(allOrders);
+        setOrders(allOrders.filter((o: Order) => o.paymentStatus === "PAID"));
       }
     } catch (e) {
       console.error(e);
