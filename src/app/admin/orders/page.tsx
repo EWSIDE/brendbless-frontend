@@ -40,6 +40,7 @@ export default function AdminOrdersPage() {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [sizePicking, setSizePicking] = useState<string | null>(null); // itemId being edited
   const [savingSize, setSavingSize] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const getToken = () => getCookie(ACCESS_TOKEN_COOKIE) || "";
 
@@ -161,6 +162,33 @@ export default function AdminOrdersPage() {
         </button>
       </div>
 
+      {/* Search */}
+      <div style={{ marginBottom: "16px", position: "relative" }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f1a7c8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+        </svg>
+        <input
+          type="text"
+          placeholder="поиск по номеру, имени, email, телефону..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "14px 20px 14px 44px",
+            border: "1.5px solid #f3e8ee",
+            borderRadius: "40px",
+            fontSize: "14px",
+            background: "#fff",
+            boxSizing: "border-box",
+            outline: "none",
+            transition: "border-color 0.2s",
+            color: "#1a1a1a",
+          }}
+          onFocus={(e) => (e.currentTarget.style.borderColor = "#f1a7c8")}
+          onBlur={(e) => (e.currentTarget.style.borderColor = "#f3e8ee")}
+        />
+      </div>
+
       {/* Orders list */}
       {orders.length === 0 ? (
         <div style={{ textAlign: "center", padding: "60px 20px", color: "#9ca3af" }}>
@@ -168,7 +196,21 @@ export default function AdminOrdersPage() {
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          {orders.map((order) => {
+          {orders.filter((order) => {
+            if (!searchQuery.trim()) return true;
+            const q = searchQuery.toLowerCase();
+            const addr = parseAddress(order.shippingAddress);
+            const searchFields = [
+              order.orderNumber,
+              order.User?.email,
+              order.User?.firstName,
+              order.User?.lastName,
+              addr?.fullName,
+              addr?.phone,
+              addr?.city,
+            ].filter(Boolean).join(" ").toLowerCase();
+            return searchFields.includes(q);
+          }).map((order) => {
             const st = getStatusInfo(order.status);
             const isOpen = expandedId === order.id;
             const items = order.items || order.OrderItem || [];
