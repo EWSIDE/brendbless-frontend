@@ -56,7 +56,7 @@ function parseSizes(product: BackendProduct): string[] {
 }
 
 export async function fetchProducts(): Promise<Product[]> {
-  const res = await fetch(`${API_BASE}/api/products`);
+  const res = await fetch(`${API_BASE}/api/products?isActive=true`);
   if (!res.ok) throw new Error("не удалось загрузить товары");
   const data = (await res.json()) as ProductsResponse;
 
