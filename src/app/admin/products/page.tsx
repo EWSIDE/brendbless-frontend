@@ -56,6 +56,7 @@ export default function AdminProductsPage() {
   const [filter, setFilter] = useState<"all" | "active" | "inactive">("active");
   const [searchQuery, setSearchQuery] = useState("");
   const [savingOrder, setSavingOrder] = useState(false);
+  const [togglingSales, setTogglingSales] = useState(false);
 
   // Drag & drop for product cards
   const [draggingProductId, setDraggingProductId] = useState<string | null>(null);
@@ -470,6 +471,26 @@ export default function AdminProductsPage() {
     }
   };
 
+  const handleToggleAllSales = async () => {
+    const token = getToken();
+    const hasActive = products.some(p => p.isActive);
+    const newState = !hasActive; // если есть активные — выключаем все, иначе включаем
+    setTogglingSales(true);
+    try {
+      await Promise.all(products.map(p =>
+        fetch(`${API_URL}/api/products/${p.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ isActive: newState }),
+        })
+      ));
+      await loadProducts();
+    } catch (e) {
+      console.error(e);
+    }
+    setTogglingSales(false);
+  };
+
   const openProductModal = (prod?: Product) => {
     if (prod) {
       setEditingProduct(prod);
@@ -575,6 +596,36 @@ export default function AdminProductsPage() {
               сохранение порядка...
             </span>
           )}
+          <button
+            onClick={handleToggleAllSales}
+            disabled={togglingSales || products.length === 0}
+            style={{
+              background: products.some(p => p.isActive) ? "#fee2e2" : "#dcfce7",
+              color: products.some(p => p.isActive) ? "#991b1b" : "#166534",
+              border: "none",
+              padding: "14px 22px",
+              borderRadius: "40px",
+              cursor: togglingSales ? "wait" : "pointer",
+              fontWeight: 600,
+              fontSize: "14px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              transition: "all 0.2s",
+              boxShadow: "none",
+              whiteSpace: "nowrap",
+              opacity: togglingSales ? 0.6 : 1,
+            }}
+          >
+            {togglingSales ? (
+              <Loader2 size={16} className="spin-icon" />
+            ) : products.some(p => p.isActive) ? (
+              <X size={16} />
+            ) : (
+              <Check size={16} />
+            )}
+            {products.some(p => p.isActive) ? "закрыть продажи" : "открыть продажи"}
+          </button>
           <button
             onClick={() => router.push("/admin/products/edit")}
             className="admin-add-btn"
