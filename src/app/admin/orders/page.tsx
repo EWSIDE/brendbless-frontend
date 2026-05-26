@@ -87,7 +87,7 @@ export default function AdminOrdersPage() {
   async function saveItemSize(itemId: string, size: string) {
     setSavingSize(itemId);
     try {
-      const res = await fetch(`${API_BASE}/api/orders/items/${itemId}/size`, {
+      const res = await fetch(`${API_BASE}/api/orders/admin/items/${itemId}/size`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
