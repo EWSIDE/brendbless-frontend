@@ -38,6 +38,8 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [sizePicking, setSizePicking] = useState<string | null>(null); // itemId being edited
+  const [savingSize, setSavingSize] = useState<string | null>(null);
 
   const getToken = () => getCookie(ACCESS_TOKEN_COOKIE) || "";
 
@@ -80,6 +82,32 @@ export default function AdminOrdersPage() {
       console.error(e);
     }
     setUpdatingId(null);
+  }
+
+  async function saveItemSize(itemId: string, size: string) {
+    setSavingSize(itemId);
+    try {
+      const res = await fetch(`${API_BASE}/api/orders/items/${itemId}/size`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({ size: size + " ✎" }),
+      });
+      if (res.ok) {
+        // Update local state
+        setOrders((prev) => prev.map(o => ({
+          ...o,
+          items: o.items?.map(i => i.id === itemId ? { ...i, size: size + " ✎" } : i),
+          OrderItem: o.OrderItem?.map(i => i.id === itemId ? { ...i, size: size + " ✎" } : i),
+        })));
+        setSizePicking(null);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    setSavingSize(null);
   }
 
   function parseAddress(raw: string | null | undefined) {
@@ -245,45 +273,113 @@ export default function AdminOrdersPage() {
                     {items.length > 0 && (
                       <div>
                         <p style={{ margin: "0 0 8px", fontSize: "13px", fontWeight: 600, color: "#6b7280" }}>товары:</p>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                          {items.map((item) => (
-                            <div key={item.id} style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                              <div style={{
-                                width: "40px", height: "40px", borderRadius: "8px",
-                                background: "#fdf2f8", overflow: "hidden", flexShrink: 0,
-                                display: "flex", alignItems: "center", justifyContent: "center",
-                              }}>
-                                {item.productImage ? (
-                                  <img src={item.productImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                                ) : (
-                                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f1a7c8" strokeWidth="1.8">
-                                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                                  </svg>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                          {items.map((item) => {
+                            const isAdminSet = item.size?.includes("✎");
+                            const displaySize = item.size?.replace(" ✎", "") || null;
+                            const hasNoSize = !item.size || item.size.trim() === "";
+                            const isPickingThis = sizePicking === item.id;
+                            const isSavingThis = savingSize === item.id;
+
+                            return (
+                              <div key={item.id} style={{ display: "flex", flexDirection: "column", gap: "6px", padding: "8px 0", borderBottom: "1px solid #fdf2f8" }}>
+                                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                  <div style={{
+                                    width: "40px", height: "40px", borderRadius: "8px",
+                                    background: "#fdf2f8", overflow: "hidden", flexShrink: 0,
+                                    display: "flex", alignItems: "center", justifyContent: "center",
+                                  }}>
+                                    {item.productImage ? (
+                                      <img src={item.productImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                    ) : (
+                                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f1a7c8" strokeWidth="1.8">
+                                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                                      </svg>
+                                    )}
+                                  </div>
+                                  <div style={{ flex: 1 }}>
+                                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                                      <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "#333" }}>{item.productName}</p>
+                                      {displaySize && (
+                                        <span style={{
+                                          display: "inline-flex",
+                                          alignItems: "center",
+                                          gap: "4px",
+                                          padding: "2px 10px",
+                                          borderRadius: "8px",
+                                          background: isAdminSet ? "#fef3c7" : "#fce7f3",
+                                          color: isAdminSet ? "#92400e" : "#be185d",
+                                          fontWeight: 700,
+                                          fontSize: "12px",
+                                        }}>
+                                          {displaySize}
+                                          {isAdminSet && <span style={{ fontSize: "10px", opacity: 0.7 }}>✎</span>}
+                                        </span>
+                                      )}
+                                      {hasNoSize && !isPickingThis && (
+                                        <button
+                                          onClick={() => setSizePicking(item.id)}
+                                          style={{
+                                            padding: "2px 10px",
+                                            borderRadius: "8px",
+                                            border: "1.5px dashed #f59e0b",
+                                            background: "#fffbeb",
+                                            color: "#92400e",
+                                            fontSize: "11px",
+                                            fontWeight: 600,
+                                            cursor: "pointer",
+                                          }}
+                                        >
+                                          ⚠️ указать размер
+                                        </button>
+                                      )}
+                                    </div>
+                                    <p style={{ margin: "2px 0 0", fontSize: "12px", color: "#8e8e8e" }}>× {item.quantity} · {item.unitPrice} ₽</p>
+                                  </div>
+                                  <span style={{ fontSize: "13px", fontWeight: 700, color: "#333" }}>{item.total} ₽</span>
+                                </div>
+                                {/* Size picker */}
+                                {isPickingThis && (
+                                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginLeft: "50px", alignItems: "center" }}>
+                                    {["XS", "S", "M", "L", "XL"].map(s => (
+                                      <button
+                                        key={s}
+                                        onClick={() => saveItemSize(item.id, s)}
+                                        disabled={isSavingThis}
+                                        style={{
+                                          padding: "5px 14px",
+                                          borderRadius: "8px",
+                                          border: "1px solid #f1a7c8",
+                                          background: "#fff",
+                                          color: "#be185d",
+                                          fontSize: "12px",
+                                          fontWeight: 700,
+                                          cursor: isSavingThis ? "wait" : "pointer",
+                                          opacity: isSavingThis ? 0.5 : 1,
+                                          transition: "all 0.15s",
+                                        }}
+                                      >
+                                        {s}
+                                      </button>
+                                    ))}
+                                    <button
+                                      onClick={() => setSizePicking(null)}
+                                      style={{
+                                        padding: "5px 10px",
+                                        border: "none",
+                                        background: "transparent",
+                                        color: "#9ca3af",
+                                        fontSize: "12px",
+                                        cursor: "pointer",
+                                      }}
+                                    >
+                                      отмена
+                                    </button>
+                                  </div>
                                 )}
                               </div>
-                              <div style={{ flex: 1 }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                                  <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "#333" }}>{item.productName}</p>
-                                  {item.size && (
-                                    <span style={{
-                                      display: "inline-block",
-                                      padding: "2px 10px",
-                                      borderRadius: "8px",
-                                      background: "#fce7f3",
-                                      color: "#be185d",
-                                      fontWeight: 700,
-                                      fontSize: "12px",
-                                      letterSpacing: "0.5px",
-                                    }}>
-                                      {item.size}
-                                    </span>
-                                  )}
-                                </div>
-                                <p style={{ margin: "2px 0 0", fontSize: "12px", color: "#8e8e8e" }}>× {item.quantity} · {item.unitPrice} ₽</p>
-                              </div>
-                              <span style={{ fontSize: "13px", fontWeight: 700, color: "#333" }}>{item.total} ₽</span>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </div>
                     )}
