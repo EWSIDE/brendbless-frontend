@@ -174,13 +174,14 @@ export default function AdminOrdersPage() {
             const items = order.items || order.OrderItem || [];
             const addr = parseAddress(order.shippingAddress);
             const isUpdating = updatingId === order.id;
+            const hasMissingSize = items.some(i => !i.size || i.size.trim() === "");
 
             return (
               <div
                 key={order.id}
                 style={{
-                  background: "#fff",
-                  border: "1px solid #fdf2f8",
+                  background: hasMissingSize ? "#fffbeb" : "#fff",
+                  border: hasMissingSize ? "2px solid #f59e0b" : "1px solid #fdf2f8",
                   borderRadius: "20px",
                   overflow: "hidden",
                   transition: "border-color 0.2s",
@@ -216,6 +217,11 @@ export default function AdminOrdersPage() {
                       {order.paymentStatus === "PAID" && (
                         <span style={{ fontSize: "11px", fontWeight: 600, padding: "2px 8px", borderRadius: "20px", background: "#dcfce7", color: "#166534" }}>
                           оплачен
+                        </span>
+                      )}
+                      {hasMissingSize && (
+                        <span style={{ fontSize: "11px", fontWeight: 600, padding: "2px 8px", borderRadius: "20px", background: "#fef3c7", color: "#92400e" }}>
+                          ⚠️ нет размера
                         </span>
                       )}
                     </div>
